@@ -30,3 +30,6 @@ View/Add comments to a grade
 Additional requirements:
 Data security (permissions for all CRUD actions)
 API documentation (OpenAPI)
+
+
+## DB-scheme
