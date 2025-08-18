@@ -32,4 +32,9 @@ Data security (permissions for all CRUD actions)
 API documentation (OpenAPI)
 
 
-## DB-scheme
+## DB schema
+
+
+## API schema
+swagger http://127.0.0.1:8000/api/schema/swagger/
+download http://127.0.0.1:8000/api/schema/download/
