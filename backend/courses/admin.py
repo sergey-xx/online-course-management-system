@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Comment, Course, HomeWork, Lecture, Submission
+from .models import Comment, Course, Grade, HomeWork, Lecture, Submission
 
 
 @admin.register(Course)
@@ -25,4 +25,9 @@ class SubmissionAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
+    ...
+
+
+@admin.register(Grade)
+class GradeAdmin(admin.ModelAdmin):
     ...
