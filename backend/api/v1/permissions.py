@@ -97,5 +97,5 @@ def get_owner_permission_class(field_name: str):
     class OwnerPermission(IsOwnerOrReadOnly):
         owner_field = field_name
 
-    OwnerPermission.__name__ = f"IsOwnerOf{field_name.capitalize()}"
+    OwnerPermission.__name__ = f"IsOwnerVia{field_name.capitalize()}"
     return OwnerPermission

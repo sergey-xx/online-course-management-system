@@ -22,6 +22,11 @@ class Course(models.Model):
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id}:{self.title}'
 
+    class Meta:
+        verbose_name = 'Course'
+        verbose_name_plural = 'Courses'
+        ordering = ('id',)
+
 
 class Lecture(models.Model):
 
@@ -37,6 +42,11 @@ class Lecture(models.Model):
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id}:{self.topic}'
+    
+    class Meta:
+        verbose_name = 'Lecture'
+        verbose_name_plural = 'Lectures'
+        ordering = ('id',)
 
 
 class HomeWork(models.Model):
@@ -51,6 +61,11 @@ class HomeWork(models.Model):
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id}:{self.text[:20]}'
+    
+    class Meta:
+        verbose_name = 'Homework'
+        verbose_name_plural = 'Homeworks'
+        ordering = ('id',)
 
 
 class Submission(models.Model):
@@ -68,6 +83,11 @@ class Submission(models.Model):
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id} Student:{self.author_id} HW:{self.homework_id}'
+    
+    class Meta:
+        verbose_name = 'Submission'
+        verbose_name_plural = 'Submissions'
+        ordering = ('id',)
 
 
 class Grade(models.Model):
@@ -85,6 +105,11 @@ class Grade(models.Model):
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}: {self.submission_id} Score: {self.score} Author:{self.author_id}'
+    
+    class Meta:
+        verbose_name = 'Grade'
+        verbose_name_plural = 'Grades'
+        ordering = ('submission_id',)
 
 
 class Comment(models.Model):
@@ -97,3 +122,8 @@ class Comment(models.Model):
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id} Grade:{self.grade_id} Author:{self.author_id}'
+    
+    class Meta:
+        verbose_name = 'Comment'
+        verbose_name_plural = 'Comments'
+        ordering = ('id',)

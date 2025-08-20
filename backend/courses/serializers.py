@@ -60,6 +60,7 @@ class LectureSerializers(serializers.ModelSerializer):
             'id',
             'course',
             'topic',
+            'teacher',
             'presentation_file',
             'datetime',
             'created_at',

@@ -4,7 +4,6 @@ from courses.serializers import (CourseSerializers, HomeWorkSerializers,
                                  MyHomeWorkSerializers, CommentSerializers, GradeSerializers)
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import MultiPartParser
 from rest_framework.viewsets import ModelViewSet, mixins, GenericViewSet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -22,7 +21,6 @@ class CourseViewSet(ModelViewSet):
         get_owner_permission_class('author')
     ]
     queryset = Course.objects.all()
-    pagination_class = PageNumberPagination
     serializer_class = CourseSerializers
 
     def perform_create(self, serializer):
