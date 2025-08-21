@@ -3,7 +3,6 @@ from django.core.exceptions import FieldDoesNotExist, ObjectDoesNotExist
 
 import pytest
 
-
 pytestmark = pytest.mark.django_db
 
 

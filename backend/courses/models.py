@@ -42,7 +42,7 @@ class Lecture(models.Model):
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id}:{self.topic}'
-    
+
     class Meta:
         verbose_name = 'Lecture'
         verbose_name_plural = 'Lectures'
@@ -61,7 +61,7 @@ class HomeWork(models.Model):
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id}:{self.text[:20]}'
-    
+
     class Meta:
         verbose_name = 'Homework'
         verbose_name_plural = 'Homeworks'
@@ -83,7 +83,7 @@ class Submission(models.Model):
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id} Student:{self.author_id} HW:{self.homework_id}'
-    
+
     class Meta:
         verbose_name = 'Submission'
         verbose_name_plural = 'Submissions'
@@ -105,7 +105,7 @@ class Grade(models.Model):
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}: {self.submission_id} Score: {self.score} Author:{self.author_id}'
-    
+
     class Meta:
         verbose_name = 'Grade'
         verbose_name_plural = 'Grades'
@@ -122,7 +122,7 @@ class Comment(models.Model):
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id} Grade:{self.grade_id} Author:{self.author_id}'
-    
+
     class Meta:
         verbose_name = 'Comment'
         verbose_name_plural = 'Comments'

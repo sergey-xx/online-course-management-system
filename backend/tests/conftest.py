@@ -1,9 +1,5 @@
-import random
-import string
-
 import pytest
 from rest_framework.test import APIClient
-import django.test as django_test
 
 try:
     from courses.models import Course
@@ -12,14 +8,16 @@ except (NameError, ImportError):
         'Model `Course` is not found'
     )
 
+try:
+    from courses.models import Lecture
+except (NameError, ImportError):
+    raise AssertionError(
+        'Model `Lecture` is not found'
+    )
+
 
 DATETIMEFORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
 PASSWORD = 'pass'
-
-
-def get_random_string(length=6):
-    random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
-    return random_string
 
 
 @pytest.fixture()
