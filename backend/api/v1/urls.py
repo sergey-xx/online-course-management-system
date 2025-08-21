@@ -1,9 +1,9 @@
 from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
 
-from .views import (CommentViewSet, CourseViewSet, HomeWorkSubmissionViewSet,
-                    LectureHomeWorkViewSet, LectureViewSet, MyHomeWorkViewSet,
-                    GradeViewSet)
+from .views import (CommentViewSet, CourseViewSet, GradeViewSet,
+                    HomeWorkSubmissionViewSet, LectureHomeWorkViewSet,
+                    LectureViewSet, MyHomeWorkViewSet)
 
 router = DefaultRouter()
 

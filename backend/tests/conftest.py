@@ -1,6 +1,6 @@
 import pytest
-from rest_framework.test import APIClient
 from django.core.files.uploadedfile import SimpleUploadedFile
+from rest_framework.test import APIClient
 
 try:
     from courses.models import Course

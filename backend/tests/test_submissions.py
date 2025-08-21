@@ -1,7 +1,7 @@
-from courses.models import Submission
 from django.contrib.auth import get_user_model
-
 from rest_framework import status
+
+from courses.models import Submission
 
 User = get_user_model()
 

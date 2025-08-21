@@ -1,6 +1,7 @@
-from courses.models import HomeWork
 from django.contrib.auth import get_user_model
 from rest_framework import status
+
+from courses.models import HomeWork
 
 User = get_user_model()
 

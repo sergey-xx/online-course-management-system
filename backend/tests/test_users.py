@@ -1,7 +1,6 @@
+import pytest
 from django.contrib.auth import get_user_model
 from django.core.exceptions import FieldDoesNotExist
-
-import pytest
 
 pytestmark = pytest.mark.django_db
 

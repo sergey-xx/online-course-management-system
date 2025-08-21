@@ -1,16 +1,19 @@
-from courses.models import Course, Lecture, HomeWork, Grade, Submission
-from courses.serializers import (CourseSerializers, HomeWorkSerializers,
-                                 LectureSerializers, SubmissionSerializers,
-                                 MyHomeWorkSerializers, CommentSerializers, GradeSerializers)
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions
 from rest_framework.parsers import MultiPartParser
-from rest_framework.viewsets import ModelViewSet, mixins, GenericViewSet
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.viewsets import GenericViewSet, ModelViewSet, mixins
+
+from courses.models import Course, Grade, HomeWork, Lecture, Submission
+from courses.serializers import (CommentSerializers, CourseSerializers,
+                                 GradeSerializers, HomeWorkSerializers,
+                                 LectureSerializers, MyHomeWorkSerializers,
+                                 SubmissionSerializers)
 
 from .filters import HomeWorkFilter
-from .permissions import (CanAddHomeWork, CanAddLecture, IsTeaacher, IsTeaacherOrReadOnly,
-                          IsStudentrOrReadOnly, get_owner_permission_class, CanAddReadComment)
+from .permissions import (CanAddHomeWork, CanAddLecture, CanAddReadComment,
+                          IsStudentrOrReadOnly, IsTeaacher,
+                          IsTeaacherOrReadOnly, get_owner_permission_class)
 
 
 class CourseViewSet(ModelViewSet):

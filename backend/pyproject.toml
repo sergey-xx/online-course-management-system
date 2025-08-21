@@ -19,9 +19,14 @@ dependencies = [
 dev = [
     "pytest>=8.4.1",
     "pytest-django>=4.11.1",
+    "isort",
 ]
 
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "project.settings"
 python_files = "tests.py test_*.py *_tests.py"
+
+[tool.isort]
+line_length = 79
+known_first_party = ["backend"] 

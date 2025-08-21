@@ -1,5 +1,6 @@
 from django_filters import rest_framework as filters
-from django_filters.rest_framework import BooleanFilter, DateTimeFromToRangeFilter
+from django_filters.rest_framework import (BooleanFilter,
+                                           DateTimeFromToRangeFilter)
 
 
 class HomeWorkFilter(filters.FilterSet):

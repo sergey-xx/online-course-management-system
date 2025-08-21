@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
-from core.exceptions import Conflict
 from django.db.utils import IntegrityError
+from rest_framework import serializers
 
-from .models import Comment, Course, HomeWork, Lecture, Submission, Grade
+from core.exceptions import Conflict
+
+from .models import Comment, Course, Grade, HomeWork, Lecture, Submission
 
 User = get_user_model()
 
