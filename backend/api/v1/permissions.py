@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions
 
-from courses.models import Course, Lecture
+from courses.models import Course, Lecture, Submission
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
@@ -15,7 +15,6 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        # Check if the user making the request is the owner of the object.
         return getattr(obj, self.owner_field) == request.user
 
 
@@ -83,6 +82,20 @@ class CanAddHomeWork(permissions.BasePermission):
         lecture = get_object_or_404(Lecture, id=lecture_id)
         return bool(
             lecture.teacher == request.user
+        )
+
+
+class CanAddReadComment(permissions.BasePermission):
+
+    message = 'You a not assigned to this grade'
+
+    def has_permission(self, request, view):
+        if request.user.role == 'TEACHER':
+            return True
+        grade_id = view.kwargs.get('grade_id')
+        submission = get_object_or_404(Submission, pk=grade_id)
+        return bool(
+            submission.author == request.user
         )
 
 

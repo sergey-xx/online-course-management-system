@@ -11,7 +11,7 @@ def test_course_creation(teacher, student, auth_client_teacher):
     data = response.json()
     for key in payload.keys():
         assert data[key] == payload[key]
-    assert isinstance(data['id'], int) == True
+    assert isinstance(data['id'], int) is True
 
 
 def test_student_cant_create_couse(teacher, student, auth_client_student):
@@ -29,7 +29,7 @@ def test_course_update(teacher, student, course, auth_client_teacher):
     data = response.json()
     for key in payload.keys():
         assert data[key] == payload[key]
-    assert isinstance(data['id'], int) == True
+    assert isinstance(data['id'], int) is True
 
 
 def test_student_cant_update_couse(teacher, student, course, auth_client_student):

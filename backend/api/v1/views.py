@@ -10,7 +10,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from .filters import HomeWorkFilter
 from .permissions import (CanAddHomeWork, CanAddLecture, IsTeaacher, IsTeaacherOrReadOnly,
-                          IsStudentrOrReadOnly, get_owner_permission_class)
+                          IsStudentrOrReadOnly, get_owner_permission_class, CanAddReadComment)
 
 
 class CourseViewSet(ModelViewSet):
@@ -142,16 +142,20 @@ class CommentViewSet(ModelViewSet):
     """
     permission_classes = [
         permissions.IsAuthenticated,
+        CanAddReadComment,
         get_owner_permission_class('author')
     ]
     serializer_class = CommentSerializers
 
     def get_queryset(self):
         grade_id = self.kwargs.get('grade_id')
-        grade = get_object_or_404(Grade, submission_id=grade_id)
+        if self.request.user.role == 'TEACHER':
+            grade = get_object_or_404(Grade, pk=grade_id)
+        else:
+            grade = get_object_or_404(Grade, pk=grade_id, submission__author=self.request.user)
         return grade.comments.all()
 
     def perform_create(self, serializer):
-        homework_id = self.kwargs.get('homework_id')
-        homework = get_object_or_404(HomeWork, id=homework_id)
-        serializer.save(homework=homework, author=self.request.user)
+        grade_id = self.kwargs.get('grade_id')
+        grade = get_object_or_404(Grade, pk=grade_id)
+        serializer.save(grade=grade, author=self.request.user)

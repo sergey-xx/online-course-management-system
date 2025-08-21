@@ -103,7 +103,7 @@ class GradeSerializers(serializers.ModelSerializer):
 
 class SubmissionSerializers(serializers.ModelSerializer):
 
-    grade = GradeSerializers()
+    grade = GradeSerializers(read_only=True)
 
     class Meta:
         model = Submission
@@ -119,6 +119,7 @@ class SubmissionSerializers(serializers.ModelSerializer):
         read_only_fields = (
             'id',
             'author',
+            'homework',
             'grade,'
             'created_at',
             'updated_at',
