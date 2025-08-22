@@ -25,6 +25,7 @@ class CourseViewSet(ModelViewSet):
     ]
     queryset = Course.objects.all()
     serializer_class = CourseSerializers
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     def perform_create(self, serializer):
         """Set the user who created the course as the author."""
@@ -42,6 +43,7 @@ class LectureViewSet(ModelViewSet):
     ]
     serializer_class = LectureSerializers
     parser_classes = (MultiPartParser,)
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_queryset(self):
         course_id = self.kwargs.get('course_id')
@@ -65,6 +67,7 @@ class LectureHomeWorkViewSet(ModelViewSet):
         get_owner_permission_class('author')
     ]
     serializer_class = HomeWorkSerializers
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_queryset(self):
         lecture_id = self.kwargs.get('lecture_id')
@@ -87,6 +90,7 @@ class HomeWorkSubmissionViewSet(ModelViewSet):
         get_owner_permission_class('author')
     ]
     serializer_class = SubmissionSerializers
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_queryset(self):
         homework_id = self.kwargs.get('homework_id')
@@ -114,6 +118,9 @@ class GradeViewSet(mixins.CreateModelMixin,
         get_owner_permission_class('author')
     ]
     serializer_class = GradeSerializers
+    lookup_field = 'submission_id'
+    queryset = Grade.objects.all()
+    http_method_names = ['post', 'patch']
 
     def perform_create(self, serializer):
         submission_id = self.kwargs.get('submission_id')
@@ -149,6 +156,7 @@ class CommentViewSet(ModelViewSet):
         get_owner_permission_class('author')
     ]
     serializer_class = CommentSerializers
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_queryset(self):
         grade_id = self.kwargs.get('grade_id')

@@ -201,7 +201,7 @@ def submission(db, student, homework):
 @pytest.fixture
 def another_submission(db, another_student, homework):
     return Submission.objects.create(
-        text="dslfnlasndflksdanf",
+        text="lkmlkadsfml",
         author=another_student,
         homework=homework
     )

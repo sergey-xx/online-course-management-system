@@ -23,10 +23,6 @@ router.register(r'homeworks/(?P<homework_id>\d+)/submissions',
                 HomeWorkSubmissionViewSet,
                 basename='homework-submissions')
 
-router.register(r'submissions/(?P<submission_id>\d+)/grade',
-                GradeViewSet,
-                basename='submission-grade')
-
 router.register(r'submissions/grade/(?P<grade_id>\d+)/comments',
                 CommentViewSet,
                 basename='submission-submissions')
@@ -38,5 +34,15 @@ router.register(r'my/homeworks',
 urlpatterns = [
     re_path(r'^auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.jwt')),
+    path(
+        'submissions/<int:submission_id>/grade/',
+        GradeViewSet.as_view(
+            {
+                'post': 'create',
+                'patch': 'partial_update',
+            }
+        ),
+        name='submission-grade',
+    ),
     path('', include(router.urls)),
 ]
