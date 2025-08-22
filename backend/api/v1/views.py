@@ -1,3 +1,4 @@
+from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions
@@ -143,7 +144,16 @@ class MyHomeWorkViewSet(mixins.ListModelMixin,
     filterset_class = HomeWorkFilter
 
     def get_queryset(self):
-        return super().get_queryset().filter(lecture__course__students=self.request.user)
+        if self.request.user.role == 'TEACHER':
+            return (
+                super().get_queryset()
+                .filter(author=self.request.user)
+                .prefetch_related('submissions'))
+        return (
+            super().get_queryset()
+            .filter(lecture__course__students=self.request.user)
+            .prefetch_related(Prefetch('submissions', Submission.objects.filter(author=self.request.user)))
+        )
 
 
 class CommentViewSet(ModelViewSet):

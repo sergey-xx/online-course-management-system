@@ -21,26 +21,35 @@ Teachers have the following capabilities:
 
 ✅CRUD operations for lectures in their courses (A lecture consists of a topic and a presentation file)
 
-Add homework assignments (text information) to each lecture
-View completed homework submissions
-Assign or change grades for each student who has submitted homework
-Add comments to each grade
+✅Add homework assignments (text information) to each lecture
+
+✅View completed homework submissions
+
+✅Assign or change grades for each student who has submitted homework
+
+✅Add comments to each grade
 
 Students have the following capabilities:
-View available courses
-View available lectures within a selected available course
-View homework for an available lecture
-Submit homework for review
-View their own homework submissions
-View grades for their homework
-View/Add comments to a grade
+
+✅View available courses
+
+
+✅View available lectures within a selected available course
+
+✅View homework for an available lecture
+
+✅Submit homework for review
+
+✅View their own homework submissions
+
+✅View grades for their homework
+
+✅View/Add comments to a grade
 
 Additional requirements:
-Data security (permissions for all CRUD actions)
-API documentation (OpenAPI)
+✅Data security (permissions for all CRUD actions)
 
-
-## DB schema
+✅API documentation (OpenAPI)
 
 
 ## API schema
@@ -49,5 +58,4 @@ download http://127.0.0.1:8000/api/schema/download/
 
 
 ## ToDo
-- pytests
 - deploy configurations
