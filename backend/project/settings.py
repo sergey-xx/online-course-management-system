@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'api',
     'users',
     'courses',
+    'mock',
 ]
 
 MIDDLEWARE = [
@@ -44,6 +45,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE += ['querycount.middleware.QueryCountMiddleware']
 
 ROOT_URLCONF = 'project.urls'
 
