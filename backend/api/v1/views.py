@@ -13,8 +13,8 @@ from courses.serializers import (CommentSerializers, CourseSerializers,
 
 from .filters import HomeWorkFilter
 from .permissions import (CanAddHomeWork, CanAddLecture, CanAddReadComment,
-                          IsStudentrOrReadOnly,
-                          IsTeaacherOrReadOnly, get_owner_permission_class)
+                          IsStudentrOrReadOnly, IsTeaacherOrReadOnly,
+                          get_owner_permission_class)
 
 
 class CourseViewSet(ModelViewSet):
@@ -150,7 +150,8 @@ class MyHomeWorkViewSet(mixins.ListModelMixin,
                 .filter(author=self.request.user)
                 .prefetch_related('submissions'))
         return (
-            super().get_queryset()
+            super()
+            .get_queryset()
             .filter(lecture__course__students=self.request.user)
             .prefetch_related(Prefetch('submissions', Submission.objects.filter(author=self.request.user)))
         )
