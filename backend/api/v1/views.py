@@ -13,7 +13,7 @@ from courses.serializers import (CommentSerializers, CourseSerializers,
 
 from .filters import HomeWorkFilter
 from .permissions import (CanAddHomeWork, CanAddLecture, CanAddReadComment,
-                          IsStudentrOrReadOnly, IsTeaacher,
+                          IsStudentrOrReadOnly,
                           IsTeaacherOrReadOnly, get_owner_permission_class)
 
 
@@ -21,7 +21,7 @@ class CourseViewSet(ModelViewSet):
 
     permission_classes = [
         permissions.IsAuthenticated,
-        IsTeaacher,
+        IsTeaacherOrReadOnly,
         get_owner_permission_class('author')
     ]
     queryset = Course.objects.all()
