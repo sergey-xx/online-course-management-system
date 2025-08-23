@@ -24,7 +24,7 @@ class CourseViewSet(ModelViewSet):
         IsTeaacherOrReadOnly,
         get_owner_permission_class('author')
     ]
-    queryset = Course.objects.all()
+    queryset = Course.objects.prefetch_related('teachers', 'students')
     serializer_class = CourseSerializers
     http_method_names = ['get', 'post', 'patch', 'delete']
 
