@@ -9,7 +9,9 @@ from courses.models import Comment, Course, Grade, HomeWork, Lecture, Submission
 
 
 class CourseService(AuthorService):
-
+    """
+    A service class to handle business logic related to courses.
+    """
     @transaction.atomic
     def create(self, title, teachers: Iterable, students: Iterable):
         course = Course.objects.create(title=title, author=self.author,)
@@ -21,7 +23,9 @@ class CourseService(AuthorService):
 
 
 class LectureService(AuthorService):
-
+    """
+    A service class to handle business logic related to lectures.
+    """
     def create(self, *args, **kwargs):
         return Lecture.objects.create(
             *args, **kwargs
@@ -29,7 +33,9 @@ class LectureService(AuthorService):
 
 
 class HomeWorkService(AuthorService):
-
+    """
+    A service class to handle business logic related to homeworks.
+    """
     def create(self, *args, **kwargs):
         return HomeWork.objects.create(
             author=self.author,
@@ -38,6 +44,9 @@ class HomeWorkService(AuthorService):
 
 
 class SubmissionService(AuthorService):
+    """
+    A service class to handle business logic related to submissions.
+    """
 
     def create(self, *args, **kwargs):
         return Submission.objects.create(
@@ -48,7 +57,7 @@ class SubmissionService(AuthorService):
 
 class GradingService(AuthorService):
     """
-    A service class to handle business logic related to grading.
+    A service class to handle business logic related to gradings.
     """
 
     def create(self, submission: Submission, score: int) -> Grade:
@@ -65,7 +74,7 @@ class GradingService(AuthorService):
 
 class CommentService(AuthorService):
     """
-    A service class to handle business logic related to Comments.
+    A service class to handle business logic related to comments.
     """
 
     def create(self, *args, **kwargs):
