@@ -73,6 +73,15 @@ def student(db, django_user_model):
     )
 
 
+@pytest.fixture
+def another_teacher(db, django_user_model):
+    return django_user_model.objects.create_user(
+        username='another_teacher',
+        password='password123',
+        role='TEACHER'
+    )
+
+
 @pytest.fixture()
 def another_student(db, django_user_model):
     """Fixture `User` STUDENT."""
@@ -86,26 +95,15 @@ def another_student(db, django_user_model):
 
 
 @pytest.fixture()
-def auth_client_teacher(db, teacher):
-    """Fixture `APIClient` with authorizated user."""
+def auth_client(db, request, teacher, another_teacher, student, another_student):
     client = APIClient()
-    client.force_authenticate(teacher)
-    return client
-
-
-@pytest.fixture()
-def auth_client_student(db, student):
-    """Fixture `APIClient` with authorizated user."""
-    client = APIClient()
-    client.force_authenticate(student)
-    return client
-
-
-@pytest.fixture()
-def auth_client_another_student(db, another_student):
-    """Fixture `APIClient` with authorizated user."""
-    client = APIClient()
-    client.force_authenticate(another_student)
+    user = {
+        'teacher': teacher,
+        'student': student,
+        'another_teacher': another_teacher,
+        'another_student': another_student
+    }[request.param]
+    client.force_authenticate(user)
     return client
 
 
@@ -138,22 +136,6 @@ def someone_else_course(db, django_user_model):
         title='string',
         author=new_teacher,
     )
-
-
-@pytest.fixture
-def another_teacher(db, django_user_model):
-    return django_user_model.objects.create_user(
-        username='another_teacher',
-        password='password123',
-        role='TEACHER'
-    )
-
-
-@pytest.fixture
-def auth_client_another_teacher(db, another_teacher):
-    client = APIClient()
-    client.force_authenticate(another_teacher)
-    return client
 
 
 @pytest.fixture

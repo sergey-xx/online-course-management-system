@@ -44,7 +44,6 @@ ignore = [
     'W503',
 ]
 exclude = [
-    'tests/',
     '*/migrations/',
     'venv/',
     '.venv/',
@@ -52,7 +51,6 @@ exclude = [
     '*/venv/',
     'env/',
     '*/env/',
-    '# backend/tests/',
     'backend/media/',
 ]
 per-file-ignores = [

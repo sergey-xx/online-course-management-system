@@ -1,3 +1,4 @@
+import pytest
 from django.contrib.auth import get_user_model
 from rest_framework import status
 
@@ -6,88 +7,83 @@ from courses.models import Comment
 User = get_user_model()
 
 
-def test_create_comment_by_student_or_teacher(auth_client_teacher, auth_client_student, grade):
+@pytest.mark.parametrize('auth_client', ['teacher', 'student'], indirect=True)
+def test_create_comment_by_student_or_teacher(auth_client, grade):
     url = f'/api/v1/submissions/grade/{grade.pk}/comments/'
     payload = {
         'text': 'test_text'
     }
-    for client in (auth_client_teacher, auth_client_student):
-        response = client.post(url, payload)
-        assert response.status_code == status.HTTP_201_CREATED
-        assert response.data['text'] == payload['text']
+    response = auth_client.post(url, payload)
+    assert response.status_code == status.HTTP_201_CREATED
+    assert response.data['text'] == payload['text']
 
 
-def test_create_comment_by_another_student(auth_client_another_student, grade):
+@pytest.mark.parametrize('auth_client', ['another_student'], indirect=True)
+def test_create_comment_by_another_student(auth_client, grade):
     url = f'/api/v1/submissions/grade/{grade.pk}/comments/'
     payload = {
         'text': 'test_text'
     }
-    response = auth_client_another_student.post(url, payload)
+    response = auth_client.post(url, payload)
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
+@pytest.mark.parametrize('auth_client', ['teacher', 'another_teacher', 'student'], indirect=True)
 def test_retrieve_comment(
-        auth_client_teacher,
-        auth_client_student,
-        auth_client_another_teacher,
+        auth_client,
         comment,
 ):
     url = f'/api/v1/submissions/grade/{comment.grade.pk}/comments/{comment.pk}/'
-    for client in (auth_client_teacher, auth_client_student, auth_client_another_teacher):
-        response = client.get(url)
-        assert response.status_code == status.HTTP_200_OK
-        assert response.data['text'] == comment.text
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data['text'] == comment.text
 
 
+@pytest.mark.parametrize('auth_client', ['another_student',], indirect=True)
 def test_retrieve_comment_anoter_student(
-        auth_client_another_student,
+        auth_client,
         comment,
 ):
     url = f'/api/v1/submissions/grade/{comment.grade.pk}/comments/{comment.pk}/'
-    response = auth_client_another_student.get(url)
+    response = auth_client.get(url)
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
+@pytest.mark.parametrize('auth_client', ['teacher',], indirect=True)
 def test_update_comment_by_author(
-    auth_client_teacher,
+    auth_client,
     comment,
 ):
     payload = {'text': 'new comment'}
     url = f'/api/v1/submissions/grade/{comment.grade.pk}/comments/{comment.pk}/'
-    response = auth_client_teacher.patch(url, payload)
+    response = auth_client.patch(url, payload)
     assert response.status_code == status.HTTP_200_OK
     comment.refresh_from_db()
     assert comment.text == payload['text']
 
 
+@pytest.mark.parametrize('auth_client', ['another_student', 'another_teacher', 'student'], indirect=True)
 def test_update_comment_by_non_author(
-    auth_client_student,
-    auth_client_another_teacher,
-    auth_client_another_student,
+    auth_client,
     comment,
 ):
     payload = {'text': 'new comment'}
     url = f'/api/v1/submissions/grade/{comment.grade.pk}/comments/{comment.pk}/'
-    for client in (auth_client_student, auth_client_another_student, auth_client_another_teacher):
-        response = client.patch(url, payload)
-        assert response.status_code == status.HTTP_403_FORBIDDEN
+    response = auth_client.patch(url, payload)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_delete_comment_by_author(auth_client_teacher, comment,):
+@pytest.mark.parametrize('auth_client', ['teacher',], indirect=True)
+def test_delete_comment_by_author(auth_client, comment,):
     url = f'/api/v1/submissions/grade/{comment.grade.pk}/comments/{comment.pk}/'
-    response = auth_client_teacher.delete(url)
+    response = auth_client.delete(url)
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert not Comment.objects.filter(id=comment.id).exists()
 
 
-def test_delete_comment_by_non_author(
-    auth_client_student,
-    auth_client_another_teacher,
-    auth_client_another_student,
-    comment,
-):
+@pytest.mark.parametrize('auth_client', ['student', 'another_student', 'another_teacher'], indirect=True)
+def test_delete_comment_by_non_author(auth_client, comment):
     url = f'/api/v1/submissions/grade/{comment.grade.pk}/comments/{comment.pk}/'
-    for client in (auth_client_student, auth_client_another_student, auth_client_another_teacher):
-        response = client.delete(url)
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-        comment.refresh_from_db()
+    response = auth_client.delete(url)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    comment.refresh_from_db()
