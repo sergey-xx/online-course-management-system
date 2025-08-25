@@ -8,6 +8,8 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet, mixins
 from courses.models import Course, Grade, HomeWork, Lecture, Submission
 from courses.serializers import (CommentSerializers, CourseSerializers, GradeSerializers, HomeWorkSerializers,
                                  LectureSerializers, MyHomeWorkSerializers, SubmissionSerializers)
+from courses.services import (CommentService, CourseService, GradingService, HomeWorkService, LectureService,
+                              SubmissionService)
 
 from .filters import HomeWorkFilter
 from .permissions import (CanAddHomeWork, CanAddLecture, CanAddReadComment, IsStudentrOrReadOnly, IsTeaacherOrReadOnly,
@@ -27,7 +29,8 @@ class CourseViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         """Set the user who created the course as the author."""
-        serializer.save(author=self.request.user)
+        service = CourseService(self.request.user)
+        serializer.instance = service.create(**serializer.validated_data)
 
 
 class LectureViewSet(ModelViewSet):
@@ -51,7 +54,8 @@ class LectureViewSet(ModelViewSet):
     def perform_create(self, serializer):
         course_id = self.kwargs.get('course_id')
         course = get_object_or_404(Course, id=course_id)
-        serializer.save(course=course)
+        service = LectureService(self.request.user)
+        serializer.instance = service.create(course=course, **serializer.validated_data)
 
 
 class LectureHomeWorkViewSet(ModelViewSet):
@@ -75,7 +79,8 @@ class LectureHomeWorkViewSet(ModelViewSet):
     def perform_create(self, serializer):
         lecture_id = self.kwargs.get('lecture_id')
         lecture = get_object_or_404(Lecture, id=lecture_id)
-        serializer.save(lecture=lecture, author=self.request.user)
+        service = HomeWorkService(self.request.user)
+        serializer.instance = service.create(lecture=lecture, **serializer.validated_data)
 
 
 class HomeWorkSubmissionViewSet(ModelViewSet):
@@ -101,7 +106,8 @@ class HomeWorkSubmissionViewSet(ModelViewSet):
     def perform_create(self, serializer):
         homework_id = self.kwargs.get('homework_id')
         homework = get_object_or_404(HomeWork, id=homework_id)
-        serializer.save(homework=homework, author=self.request.user)
+        service = SubmissionService(self.request.user)
+        serializer.instance = service.create(homework=homework, **serializer.validated_data)
 
 
 class GradeViewSet(mixins.CreateModelMixin,
@@ -123,7 +129,11 @@ class GradeViewSet(mixins.CreateModelMixin,
     def perform_create(self, serializer):
         submission_id = self.kwargs.get('submission_id')
         submission = get_object_or_404(Submission, id=submission_id)
-        serializer.save(submission=submission, author=self.request.user)
+        grading_service = GradingService(self.request.user)
+        grading_service.create(
+            submission,
+            score=serializer.validated_data['score'],
+        )
 
 
 class MyHomeWorkViewSet(mixins.ListModelMixin,
@@ -177,4 +187,5 @@ class CommentViewSet(ModelViewSet):
     def perform_create(self, serializer):
         grade_id = self.kwargs.get('grade_id')
         grade = get_object_or_404(Grade, pk=grade_id)
-        serializer.save(grade=grade, author=self.request.user)
+        service = CommentService(self.request.user)
+        serializer.instance = service.create(grade=grade, **serializer.validated_data)

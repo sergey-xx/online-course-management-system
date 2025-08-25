@@ -1,8 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.db.utils import IntegrityError
 from rest_framework import serializers
-
-from core.exceptions import Conflict
 
 from .models import Comment, Course, Grade, HomeWork, Lecture, Submission
 
@@ -94,12 +91,6 @@ class GradeSerializers(serializers.ModelSerializer):
             'created_at',
             'updated_at',
         )
-
-    def save(self, **kwargs):
-        try:
-            return super().save(**kwargs)
-        except IntegrityError:
-            raise Conflict(f'Submission {kwargs["submission"].pk} already has Grade')
 
 
 class SubmissionSerializers(serializers.ModelSerializer):
