@@ -1,10 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from core.models import DatedModel
+
 User = get_user_model()
 
 
-class Course(models.Model):
+class Course(DatedModel):
 
     title = models.CharField(max_length=255, verbose_name='Title')
     author = models.ForeignKey(
@@ -16,8 +18,6 @@ class Course(models.Model):
     students = models.ManyToManyField(
         User, blank=True, related_name='student_courses', limit_choices_to={'role': 'STUDENT'}, verbose_name='Students'
     )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Creation datetime')
-    updated_at = models.DateTimeField(auto_now=True, verbose_name='Last updation datetime')
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id}:{self.title}'
@@ -28,7 +28,7 @@ class Course(models.Model):
         ordering = ('id',)
 
 
-class Lecture(models.Model):
+class Lecture(DatedModel):
 
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lectures', verbose_name='Course')
     topic = models.CharField(max_length=255, verbose_name='Topic')
@@ -37,8 +37,6 @@ class Lecture(models.Model):
     )
     presentation_file = models.FileField(blank=True, null=True, verbose_name='Presentation file')
     datetime = models.DateTimeField(blank=True, null=True, verbose_name='Schedulled date and time')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Creation datetime')
-    updated_at = models.DateTimeField(auto_now=True, verbose_name='Last updation datetime')
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id}:{self.topic}'
@@ -49,15 +47,13 @@ class Lecture(models.Model):
         ordering = ('id',)
 
 
-class HomeWork(models.Model):
+class HomeWork(DatedModel):
 
     text = models.TextField(verbose_name='Text')
     lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE, related_name='homeworks', verbose_name='Lecture')
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, limit_choices_to={'role': 'TEACHER'}, verbose_name='Author'
     )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Creation datetime')
-    updated_at = models.DateTimeField(auto_now=True, verbose_name='Last updation datetime')
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id}:{self.text[:20]}'
@@ -68,7 +64,7 @@ class HomeWork(models.Model):
         ordering = ('id',)
 
 
-class Submission(models.Model):
+class Submission(DatedModel):
 
     text = models.TextField(verbose_name='Text')
     author = models.ForeignKey(
@@ -78,8 +74,6 @@ class Submission(models.Model):
     homework = models.ForeignKey(
         HomeWork, on_delete=models.CASCADE, related_name='submissions', verbose_name='HomeWork'
     )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Creation datetime')
-    updated_at = models.DateTimeField(auto_now=True, verbose_name='Last updation datetime')
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id} Student:{self.author_id} HW:{self.homework_id}'
@@ -90,7 +84,7 @@ class Submission(models.Model):
         ordering = ('id',)
 
 
-class Grade(models.Model):
+class Grade(DatedModel):
 
     submission = models.OneToOneField(
         Submission, on_delete=models.CASCADE, primary_key=True, verbose_name='Submission'
@@ -100,8 +94,6 @@ class Grade(models.Model):
         User, on_delete=models.CASCADE, limit_choices_to={'role': 'TEACHER'},
         related_name='teacher_grades', verbose_name='Author'
     )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Creation datetime')
-    updated_at = models.DateTimeField(auto_now=True, verbose_name='Last updation datetime')
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}: {self.submission_id} Score: {self.score} Author:{self.author_id}'
@@ -112,13 +104,11 @@ class Grade(models.Model):
         ordering = ('submission_id',)
 
 
-class Comment(models.Model):
+class Comment(DatedModel):
 
     text = models.TextField(verbose_name='Text')
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, related_name='comments', verbose_name='Grade')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments', verbose_name='Author')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Creation datetime')
-    updated_at = models.DateTimeField(auto_now=True, verbose_name='Last updation datetime')
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id} Grade:{self.grade_id} Author:{self.author_id}'

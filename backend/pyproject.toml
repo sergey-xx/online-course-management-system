@@ -20,6 +20,7 @@ dev = [
     "pytest>=8.4.1",
     "pytest-django>=4.11.1",
     "isort",
+    "flake8-pyproject>=1.2.3",
 ]
 
 
@@ -28,5 +29,30 @@ DJANGO_SETTINGS_MODULE = "project.settings"
 python_files = "tests.py test_*.py *_tests.py"
 
 [tool.isort]
-line_length = 79
-known_first_party = ["backend"] 
+line_length = 119
+known_first_party = ["backend"]
+
+[tool.flake8]
+ignore = [ 
+    'I001',
+    'I003',
+    'I004',
+    'I005',
+    'W503',
+]
+exclude = [
+    'tests/',
+    '*/migrations/',
+    'venv/',
+    '.venv/',
+    '*.venv/',
+    '*/venv/',
+    'env/',
+    '*/env/',
+    '# backend/tests/',
+    'backend/media/',
+]
+per-file-ignores = [
+    '*/settings.py:E501'
+]
+max-line-length = 119
