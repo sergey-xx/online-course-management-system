@@ -19,7 +19,6 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     @factory.post_generation
     def password(self, create, extracted, **kwargs):
-        # Устанавливаем пароль по умолчанию, чтобы можно было войти в систему
         if not create:
             return
         self.set_password("password123")
@@ -31,7 +30,6 @@ class CourseFactory(factory.django.DjangoModelFactory):
         model = Course
 
     title = factory.Faker("sentence", nb_words=4)
-    # Автор курса - всегда учитель
     author = factory.SubFactory(UserFactory, role="TEACHER")
 
 
@@ -51,7 +49,6 @@ class HomeWorkFactory(factory.django.DjangoModelFactory):
 
     text = factory.Faker("paragraph", nb_sentences=5)
     lecture = factory.SubFactory(LectureFactory)
-    # Автор ДЗ - это преподаватель, который ведет лекцию
     author = factory.LazyAttribute(lambda obj: obj.lecture.teacher)
 
 

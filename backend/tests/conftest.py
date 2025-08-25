@@ -1,5 +1,9 @@
+import shutil
+import tempfile
+
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
 from rest_framework.test import APIClient
 
 try:
@@ -47,6 +51,7 @@ except (NameError, ImportError):
 
 DATETIMEFORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
 PASSWORD = 'pass'
+TEMP_MEDIA_ROOT = tempfile.mkdtemp()
 
 
 @pytest.fixture()
@@ -138,9 +143,17 @@ def someone_else_course(db, django_user_model):
     )
 
 
+@pytest.fixture()
+def temp_media_root():
+    temp_dir = tempfile.mkdtemp()
+    with override_settings(MEDIA_ROOT=temp_dir):
+        yield temp_dir
+    shutil.rmtree(temp_dir)
+
+
 @pytest.fixture
-def lecture_payload(teacher):
-    """Фикстура для данных при создании лекции."""
+def lecture_payload(temp_media_root, teacher):
+    """Fixture for data when creating a lecture."""
     return {
         "topic": "Новая лекция",
         "teacher": teacher.id,
@@ -153,9 +166,9 @@ def lecture_payload(teacher):
 
 
 @pytest.fixture
-def lecture(db, course, teacher):
+def lecture(db, temp_media_root, course, teacher):
     return Lecture.objects.create(
-        topic="Введение в тестирование",
+        topic="Introduction to testing",
         course=course,
         teacher=teacher,
         presentation_file=SimpleUploadedFile("lecture.txt", b"lecture content")
