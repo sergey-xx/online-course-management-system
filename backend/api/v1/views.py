@@ -6,15 +6,12 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.viewsets import GenericViewSet, ModelViewSet, mixins
 
 from courses.models import Course, Grade, HomeWork, Lecture, Submission
-from courses.serializers import (CommentSerializers, CourseSerializers,
-                                 GradeSerializers, HomeWorkSerializers,
-                                 LectureSerializers, MyHomeWorkSerializers,
-                                 SubmissionSerializers)
+from courses.serializers import (CommentSerializers, CourseSerializers, GradeSerializers, HomeWorkSerializers,
+                                 LectureSerializers, MyHomeWorkSerializers, SubmissionSerializers)
 
 from .filters import HomeWorkFilter
-from .permissions import (CanAddHomeWork, CanAddLecture, CanAddReadComment,
-                          IsStudentrOrReadOnly,
-                          IsTeaacherOrReadOnly, get_owner_permission_class)
+from .permissions import (CanAddHomeWork, CanAddLecture, CanAddReadComment, IsStudentrOrReadOnly, IsTeaacherOrReadOnly,
+                          get_owner_permission_class)
 
 
 class CourseViewSet(ModelViewSet):
@@ -150,7 +147,8 @@ class MyHomeWorkViewSet(mixins.ListModelMixin,
                 .filter(author=self.request.user)
                 .prefetch_related('submissions'))
         return (
-            super().get_queryset()
+            super()
+            .get_queryset()
             .filter(lecture__course__students=self.request.user)
             .prefetch_related(Prefetch('submissions', Submission.objects.filter(author=self.request.user)))
         )
