@@ -2,7 +2,8 @@
 Online course management system
 
 ## requirements:
-python3.12
+- python3.12
+- uv
 
 ## Description
 It is assumed that Django/DRF frameworks will be used. All application logic must be implemented and accessible via an API (NOT via the Django admin module). You may optionally add an admin panel if you wish.
@@ -47,15 +48,12 @@ Students have the following capabilities:
 ✅View/Add comments to a grade
 
 Additional requirements:
+
 ✅Data security (permissions for all CRUD actions)
 
 ✅API documentation (OpenAPI)
 
 
 ## API schema
-swagger http://127.0.0.1:8000/api/schema/swagger/
-download http://127.0.0.1:8000/api/schema/download/
-
-
-## ToDo
-- deploy configurations
+- swagger http://127.0.0.1:8000/api/schema/swagger/
+- download http://127.0.0.1:8000/api/schema/download/
