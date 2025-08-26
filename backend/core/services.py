@@ -27,3 +27,6 @@ class AuthorService(ABC):
             setattr(instance, attr, value)
         instance.save()
         return instance
+
+    def delete(self, instance: Model):
+        instance.delete()

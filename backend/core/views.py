@@ -2,6 +2,7 @@ from typing import Type
 
 
 class ServiceViewMixin:
+    """Overrides creation, update and delete methods not to use serializer."""
 
     service_class: Type
 
@@ -16,3 +17,7 @@ class ServiceViewMixin:
     def perform_update(self, serializer):
         service = self.get_service()
         serializer.instance = service.update(serializer.instance, **serializer.validated_data)
+
+    def perform_destroy(self, instance):
+        service = self.get_service()
+        service.delete(instance)
