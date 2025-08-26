@@ -5,6 +5,7 @@ from rest_framework import permissions
 from rest_framework.parsers import MultiPartParser
 from rest_framework.viewsets import GenericViewSet, ModelViewSet, mixins
 
+from core.views import ServiceViewMixin
 from courses.models import Course, Grade, HomeWork, Lecture, Submission
 from courses.serializers import (CommentSerializers, CourseSerializers, GradeSerializers, HomeWorkSerializers,
                                  LectureSerializers, MyHomeWorkSerializers, SubmissionSerializers)
@@ -16,7 +17,7 @@ from .permissions import (CanAddHomeWork, CanAddLecture, CanAddReadComment, IsSt
                           get_owner_permission_class)
 
 
-class CourseViewSet(ModelViewSet):
+class CourseViewSet(ServiceViewMixin, ModelViewSet):
 
     permission_classes = [
         permissions.IsAuthenticated,
@@ -26,14 +27,10 @@ class CourseViewSet(ModelViewSet):
     queryset = Course.objects.prefetch_related('teachers', 'students')
     serializer_class = CourseSerializers
     http_method_names = ['get', 'post', 'patch', 'delete']
-
-    def perform_create(self, serializer):
-        """Set the user who created the course as the author."""
-        service = CourseService(self.request.user)
-        serializer.instance = service.create(**serializer.validated_data)
+    service_class = CourseService
 
 
-class LectureViewSet(ModelViewSet):
+class LectureViewSet(ServiceViewMixin, ModelViewSet):
     """
     ViewSet for lectures. multipart/form-data
     """
@@ -45,6 +42,7 @@ class LectureViewSet(ModelViewSet):
     serializer_class = LectureSerializers
     parser_classes = (MultiPartParser,)
     http_method_names = ['get', 'post', 'patch', 'delete']
+    service_class = LectureService
 
     def get_queryset(self):
         course_id = self.kwargs.get('course_id')
@@ -54,11 +52,11 @@ class LectureViewSet(ModelViewSet):
     def perform_create(self, serializer):
         course_id = self.kwargs.get('course_id')
         course = get_object_or_404(Course, id=course_id)
-        service = LectureService(self.request.user)
+        service = self.get_service()
         serializer.instance = service.create(course=course, **serializer.validated_data)
 
 
-class LectureHomeWorkViewSet(ModelViewSet):
+class LectureHomeWorkViewSet(ServiceViewMixin, ModelViewSet):
     """
     ViewSet for homeworks.
     """
@@ -70,6 +68,7 @@ class LectureHomeWorkViewSet(ModelViewSet):
     ]
     serializer_class = HomeWorkSerializers
     http_method_names = ['get', 'post', 'patch', 'delete']
+    service_class = HomeWorkService
 
     def get_queryset(self):
         lecture_id = self.kwargs.get('lecture_id')
@@ -79,11 +78,11 @@ class LectureHomeWorkViewSet(ModelViewSet):
     def perform_create(self, serializer):
         lecture_id = self.kwargs.get('lecture_id')
         lecture = get_object_or_404(Lecture, id=lecture_id)
-        service = HomeWorkService(self.request.user)
+        service = self.get_service()
         serializer.instance = service.create(lecture=lecture, **serializer.validated_data)
 
 
-class HomeWorkSubmissionViewSet(ModelViewSet):
+class HomeWorkSubmissionViewSet(ServiceViewMixin, ModelViewSet):
     """
     ViewSet for submissions.
     """
@@ -94,6 +93,7 @@ class HomeWorkSubmissionViewSet(ModelViewSet):
     ]
     serializer_class = SubmissionSerializers
     http_method_names = ['get', 'post', 'patch', 'delete']
+    service_class = SubmissionService
 
     def get_queryset(self):
         homework_id = self.kwargs.get('homework_id')
@@ -106,11 +106,12 @@ class HomeWorkSubmissionViewSet(ModelViewSet):
     def perform_create(self, serializer):
         homework_id = self.kwargs.get('homework_id')
         homework = get_object_or_404(HomeWork, id=homework_id)
-        service = SubmissionService(self.request.user)
+        service = self.get_service()
         serializer.instance = service.create(homework=homework, **serializer.validated_data)
 
 
-class GradeViewSet(mixins.CreateModelMixin,
+class GradeViewSet(ServiceViewMixin,
+                   mixins.CreateModelMixin,
                    mixins.UpdateModelMixin,
                    GenericViewSet):
     """
@@ -125,13 +126,14 @@ class GradeViewSet(mixins.CreateModelMixin,
     lookup_field = 'submission_id'
     queryset = Grade.objects.all()
     http_method_names = ['post', 'patch']
+    service_class = GradingService
 
     def perform_create(self, serializer):
         submission_id = self.kwargs.get('submission_id')
         submission = get_object_or_404(Submission, id=submission_id)
-        grading_service = GradingService(self.request.user)
+        grading_service = self.get_service()
         grading_service.create(
-            submission,
+            submission=submission,
             score=serializer.validated_data['score'],
         )
 
@@ -164,7 +166,7 @@ class MyHomeWorkViewSet(mixins.ListModelMixin,
         )
 
 
-class CommentViewSet(ModelViewSet):
+class CommentViewSet(ServiceViewMixin, ModelViewSet):
     """
     ViewSet for comments.
     """
@@ -175,6 +177,7 @@ class CommentViewSet(ModelViewSet):
     ]
     serializer_class = CommentSerializers
     http_method_names = ['get', 'post', 'patch', 'delete']
+    service_class = CommentService
 
     def get_queryset(self):
         grade_id = self.kwargs.get('grade_id')
@@ -187,5 +190,5 @@ class CommentViewSet(ModelViewSet):
     def perform_create(self, serializer):
         grade_id = self.kwargs.get('grade_id')
         grade = get_object_or_404(Grade, pk=grade_id)
-        service = CommentService(self.request.user)
+        service = self.get_service()
         serializer.instance = service.create(grade=grade, **serializer.validated_data)

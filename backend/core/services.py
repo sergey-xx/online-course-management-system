@@ -1,4 +1,5 @@
-from abc import ABC, abstractmethod
+from abc import ABC
+from typing import Type
 
 from django.contrib.auth import get_user_model
 from django.db.models import Model
@@ -8,6 +9,8 @@ User = get_user_model()
 
 class AuthorService(ABC):
 
+    model: Type[Model]
+
     def __init__(self, author: User):
         """
         Initializes the service with the user performing the action.
@@ -16,6 +19,11 @@ class AuthorService(ABC):
             raise ValueError("Author must be an authenticated user.")
         self.author = author
 
-    @abstractmethod
-    def create(self, *args, **kwargs) -> Model:
-        ...
+    def create(self, **kwargs) -> Model:
+        return self.model.objects.create(author=self.author, **kwargs)
+
+    def update(self, instance: Model, **kwargs) -> Model:
+        for attr, value in kwargs.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance

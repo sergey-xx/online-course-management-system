@@ -1,5 +1,3 @@
-from typing import Iterable
-
 from django.db import transaction
 from django.db.utils import IntegrityError
 
@@ -13,21 +11,38 @@ class CourseService(AuthorService):
     A service class to handle business logic related to courses.
     """
     @transaction.atomic
-    def create(self, title, teachers: Iterable, students: Iterable):
-        course = Course.objects.create(title=title, author=self.author,)
+    def create(self, **kwargs):
+        teachers = kwargs.pop('teachers', None)
+        students = kwargs.pop('students', None)
+        course = Course.objects.create(author=self.author, **kwargs)
         if teachers:
             course.teachers.set(teachers)
         if students:
             course.students.set(students)
         return course
 
+    @transaction.atomic
+    def update(self, instance, **kwargs):
+        teachers = kwargs.pop('teachers', None)
+        students = kwargs.pop('students', None)
+        for attr, value in kwargs.items():
+            setattr(instance, attr, value)
+        if teachers:
+            instance.teachers.set(teachers)
+        if students:
+            instance.students.set(students)
+        instance.save()
+        return instance
+
 
 class LectureService(AuthorService):
     """
     A service class to handle business logic related to lectures.
     """
+    model = Lecture
+
     def create(self, *args, **kwargs):
-        return Lecture.objects.create(
+        return self.model.objects.create(
             *args, **kwargs
         )
 
@@ -36,39 +51,28 @@ class HomeWorkService(AuthorService):
     """
     A service class to handle business logic related to homeworks.
     """
-    def create(self, *args, **kwargs):
-        return HomeWork.objects.create(
-            author=self.author,
-            *args, **kwargs
-        )
+    model = HomeWork
 
 
 class SubmissionService(AuthorService):
     """
     A service class to handle business logic related to submissions.
     """
-
-    def create(self, *args, **kwargs):
-        return Submission.objects.create(
-            author=self.author,
-            *args, **kwargs
-        )
+    model = Submission
 
 
 class GradingService(AuthorService):
     """
     A service class to handle business logic related to gradings.
     """
+    model = Grade
 
-    def create(self, submission: Submission, score: int) -> Grade:
+    def create(self, **kwargs) -> Grade:
         try:
-            grade = Grade.objects.create(
-                submission=submission,
-                score=score,
-                author=self.author
-            )
+            grade = super().create(**kwargs)
             return grade
         except IntegrityError:
+            submission = kwargs.get('submission')
             raise Conflict(f'Submission {submission.pk} already has a Grade.')
 
 
@@ -76,9 +80,4 @@ class CommentService(AuthorService):
     """
     A service class to handle business logic related to comments.
     """
-
-    def create(self, *args, **kwargs):
-        return Comment.objects.create(
-            author=self.author,
-            *args, **kwargs
-        )
+    model = Comment
