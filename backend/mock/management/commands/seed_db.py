@@ -56,21 +56,21 @@ class Command(BaseCommand):
             teacher = random.choice(course_teachers)
             lectures.append(LectureFactory(course=course, teacher=teacher))
 
-        self.stdout.write(f"Создание {NUM_HOMEWORKS} домашних заданий...")
+        self.stdout.write(f"Creating {NUM_HOMEWORKS} homworks...")
         HomeWorkFactory.create_batch(
             NUM_HOMEWORKS,
             lecture=factory.Iterator(lectures),
         )
         homeworks = list(HomeWork.objects.all())
 
-        self.stdout.write(f"Создание {NUM_SUBMISSIONS} решений...")
+        self.stdout.write(f"Crerating {NUM_SUBMISSIONS} submissions...")
         submissions = SubmissionFactory.create_batch(
             NUM_SUBMISSIONS,
             homework=factory.Iterator(homeworks),
             author=factory.Iterator(students),
         )
 
-        self.stdout.write(f"Создание {NUM_GRADES} оценок...")
+        self.stdout.write(f"Creating {NUM_GRADES} grades...")
         submissions_to_grade = random.sample(submissions, k=min(NUM_GRADES, len(submissions)))
         grades = []
         for sub in submissions_to_grade:
@@ -80,7 +80,7 @@ class Command(BaseCommand):
             grader = random.choice(course_teachers)
             grades.append(GradeFactory(submission=sub, author=grader))
 
-        self.stdout.write(f"Создание {NUM_COMMENTS} комментариев...")
+        self.stdout.write(f"Creating {NUM_COMMENTS} comments...")
         if grades:
             CommentFactory.create_batch(
                 NUM_COMMENTS,
@@ -88,4 +88,4 @@ class Command(BaseCommand):
                 author=factory.Iterator(all_users),
             )
 
-        self.stdout.write(self.style.SUCCESS("База данных успешно наполнена!"))
+        self.stdout.write(self.style.SUCCESS("The database has been successfully filled!"))
