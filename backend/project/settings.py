@@ -11,9 +11,9 @@ if dotenv_file.exists():
 ENV = environ.Env()
 
 SECRET_KEY = ENV.str('SECRET_KEY')
-DEBUG = ENV.bool('DEBUG')
+DEBUG = ENV.bool('DEBUG', False)
 
-ALLOWED_HOSTS = ENV.list('ALLOWED_HOSTS', [])
+ALLOWED_HOSTS = ENV.list('ALLOWED_HOSTS', default=['localhost'])
 CSRF_TRUSTED_ORIGINS = ENV.list('CSRF_TRUSTED_ORIGINS', default=['http://127.0.0.1:8000'])
 
 
