@@ -1,6 +1,7 @@
 import os
 import time
 
+import celery
 from celery import Celery
 from celery.schedules import crontab
 
@@ -10,7 +11,7 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
 
-@app.task()
+@app.task
 def debug_task():
     """Тестовая функция."""
     time.sleep(5)
@@ -46,3 +47,12 @@ def setup_periodic_tasks(sender: Celery, **kwargs):
         crontab(hour=7, minute=30, day_of_week=1),
         test.s('Happy Mondays!'),
     )
+
+
+class MyTask(celery.Task):
+
+    def run(self, *args, **kwargs):
+        print(f'Hello from {self.__class__.__name__}!')
+
+
+debug_classed_task = app.register_task(MyTask)
