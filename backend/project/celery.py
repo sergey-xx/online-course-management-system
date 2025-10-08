@@ -13,7 +13,7 @@ app.autodiscover_tasks()
 
 @app.task
 def debug_task():
-    """Тестовая функция."""
+    """Test func."""
     time.sleep(5)
     print('Hello from debug task')
 
