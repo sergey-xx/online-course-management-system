@@ -4,11 +4,34 @@ import time
 import celery
 from celery import Celery
 from celery.schedules import crontab
+from kombu.utils.json import register_type
+from django.db.models import Model
+from django.apps import apps
+
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 app = Celery('project')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
+
+
+class ModelSerializer:
+
+    @staticmethod
+    def serialize(obj: Model):
+        return [obj._meta.label, obj.pk]
+
+    @staticmethod
+    def deserialize(obj):
+        return apps.get_model(obj[0]).objects.get(pk=obj[1])
+
+
+register_type(
+    Model,
+    'model',
+    ModelSerializer.serialize,
+    ModelSerializer.deserialize
+)
 
 
 @app.task
@@ -55,4 +78,11 @@ class MyTask(celery.Task):
         print(f'Hello from {self.__class__.__name__}!')
 
 
+class PrintObjectTask(celery.Task):
+
+    def run(self, *args, **kwargs):
+        print(f'Get {args} {kwargs}')
+
+
 debug_classed_task = app.register_task(MyTask)
+print_obj_task = app.register_task(PrintObjectTask)
