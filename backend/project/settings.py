@@ -228,3 +228,8 @@ REDIS_HOST = ENV.str('REDIS_HOST', default='localhost')
 CELERY_BROKER_URL = f'redis://{REDIS_HOST}:6379/0'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_DEFAULT_QUEUE = 'low'
+CELERY_TASK_ROUTES = {
+    'project.celery.low_task': {'queue': 'low'},
+    'project.celery.high_task': {'queue': 'high'},
+}

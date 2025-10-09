@@ -31,7 +31,7 @@ services:
     volumes:
       - ./static:/static
       - ./media:/media
-  worker:
+  worker-low:
     build:
       context: backend/
     env_file:
@@ -42,7 +42,22 @@ services:
     depends_on:
       - db
       - redis
-    command: uv run celery -A project worker --loglevel info
+    command: uv run celery -A project worker -Q low --loglevel info
+    volumes:
+      - ./static:/static
+      - ./media:/media
+  worker-high:
+    build:
+      context: backend/
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      REDIS_HOST: redis
+    depends_on:
+      - db
+      - redis
+    command: uv run celery -A project worker -Q high --loglevel info
     volumes:
       - ./static:/static
       - ./media:/media

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from project.celery import debug_classed_task, debug_task, print_obj_task
+from project.celery import debug_classed_task, debug_task, print_obj_task, low_task, high_task, undefined_task
 from users.models import CustomUser
 
 
@@ -10,6 +10,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         debug_task.apply_async()
         debug_classed_task.delay()
+        low_task.delay()
+        high_task.delay()
+        undefined_task.delay()
         user = CustomUser.objects.first()
         if user:
             print_obj_task.delay(user)

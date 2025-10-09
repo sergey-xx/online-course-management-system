@@ -84,5 +84,20 @@ class PrintObjectTask(celery.Task):
         print(f'Get {args} {kwargs}')
 
 
+@app.task
+def low_task():
+    print(f'Hello from {low_task.__name__}!')
+
+
+@app.task
+def high_task():
+    print(f'Hello from {high_task.__name__}!')
+
+
+@app.task
+def undefined_task():
+    print(f'Hello from {undefined_task.__name__}')
+
+
 debug_classed_task = app.register_task(MyTask)
 print_obj_task = app.register_task(PrintObjectTask)
