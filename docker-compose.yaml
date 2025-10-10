@@ -6,13 +6,13 @@ services:
     image: postgres:16.9
     env_file: .env
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data/
   redis:
     image: redis:7-alpine
     ports:
-      - 6379:6379
+      - "6379:6379"
     volumes:
       - ./redis_data:/local-data/
   backend:
@@ -27,7 +27,7 @@ services:
       - db
       - redis
     ports:
-      - 8000:8000
+      - "8000:8000"
     volumes:
       - ./static:/static
       - ./media:/media
@@ -57,7 +57,7 @@ services:
     depends_on:
       - db
       - redis
-    command: uv run celery -A project worker -Q high --loglevel info
+    command: uv run celery -A project worker -Q high --loglevel info -n worker1@%h
     volumes:
       - ./static:/static
       - ./media:/media
@@ -88,7 +88,7 @@ services:
       - db
       - redis
     ports:
-      - 5555:5555
+      - "5555:5555"
     command: uv run celery -A project flower
   gateway:
     build: ./infra/
@@ -98,4 +98,4 @@ services:
     depends_on:
       - backend
     ports:
-      - 80:80
+      - "80:80"
