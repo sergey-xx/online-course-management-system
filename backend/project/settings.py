@@ -2,6 +2,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import environ
+import sentry_sdk
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -233,3 +234,17 @@ CELERY_TASK_ROUTES = {
     'project.celery.low_task': {'queue': 'low'},
     'project.celery.high_task': {'queue': 'high'},
 }
+
+# Sentry settings
+sentry_sdk.init(
+    dsn=ENV.str('SENTRY_DSN'),
+    send_default_pii=True,
+
+    traces_sample_rate=1.0,
+    # To collect profiles for all profile sessions,
+    # set `profile_session_sample_rate` to 1.0.
+    profile_session_sample_rate=1.0,
+    # Profiles will be automatically collected while
+    # there is an active span.
+    profile_lifecycle="trace",
+)
