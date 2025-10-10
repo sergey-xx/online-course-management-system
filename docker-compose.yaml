@@ -30,7 +30,7 @@ services:
       - "8000:8000"
     volumes:
       - ./static:/static
-      - ./media:/media
+      - ./media:/app/media
   worker-low:
     build:
       context: backend/
