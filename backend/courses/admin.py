@@ -10,7 +10,13 @@ class CourseAdmin(admin.ModelAdmin):
 
 @admin.register(Lecture)
 class LectureAdmin(admin.ModelAdmin):
-    ...
+    list_display = (
+        'course',
+        'topic',
+        'teacher',
+        'presentation_file',
+        'datetime',
+    )
 
 
 @admin.register(HomeWork)
