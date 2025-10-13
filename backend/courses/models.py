@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 from core.models import DatedModel
 
@@ -18,6 +19,7 @@ class Course(DatedModel):
     students = models.ManyToManyField(
         User, blank=True, related_name='student_courses', limit_choices_to={'role': 'STUDENT'}, verbose_name='Students'
     )
+    history = HistoricalRecords()
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id}:{self.title}'
@@ -37,6 +39,7 @@ class Lecture(DatedModel):
     )
     presentation_file = models.FileField(blank=True, null=True, verbose_name='Presentation file')
     datetime = models.DateTimeField(blank=True, null=True, verbose_name='Schedulled date and time')
+    history = HistoricalRecords()
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id}:{self.topic}'
@@ -54,6 +57,7 @@ class HomeWork(DatedModel):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, limit_choices_to={'role': 'TEACHER'}, verbose_name='Author'
     )
+    history = HistoricalRecords()
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id}:{self.text[:20]}'
@@ -74,6 +78,7 @@ class Submission(DatedModel):
     homework = models.ForeignKey(
         HomeWork, on_delete=models.CASCADE, related_name='submissions', verbose_name='HomeWork'
     )
+    history = HistoricalRecords()
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id} Student:{self.author_id} HW:{self.homework_id}'
@@ -94,6 +99,7 @@ class Grade(DatedModel):
         User, on_delete=models.CASCADE, limit_choices_to={'role': 'TEACHER'},
         related_name='teacher_grades', verbose_name='Author'
     )
+    history = HistoricalRecords()
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}: {self.submission_id} Score: {self.score} Author:{self.author_id}'
@@ -109,6 +115,7 @@ class Comment(DatedModel):
     text = models.TextField(verbose_name='Text')
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, related_name='comments', verbose_name='Grade')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments', verbose_name='Author')
+    history = HistoricalRecords()
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__}:{self.id} Grade:{self.grade_id} Author:{self.author_id}'
