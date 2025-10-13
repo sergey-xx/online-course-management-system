@@ -10,6 +10,7 @@ dependencies = [
     "django-celery-results>=2.6.0",
     "django-environ>=0.12.0",
     "django-filter>=25.1",
+    "django-storages[s3]>=1.14.6",
     "djangorestframework==3.16.1",
     "djangorestframework-simplejwt==5.5.1",
     "djoser==2.3.3",

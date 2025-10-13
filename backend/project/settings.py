@@ -233,3 +233,23 @@ CELERY_TASK_ROUTES = {
     'project.celery.low_task': {'queue': 'low'},
     'project.celery.high_task': {'queue': 'high'},
 }
+
+# S3 integration
+STORAGES = {
+    'default': {
+        'BACKEND': 'storages.backends.s3.S3Storage',
+    },
+    'staticfiles': {
+        'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+    }
+}
+AWS_S3_USE_SSL = ENV.bool('AWS_STORAGE_USE_SSL', False)
+AWS_S3_ENDPOINT_URL = f"http{'s' if AWS_S3_USE_SSL else ''}://{ENV.str('AWS_S3_ENDPOINT_URL', 'localhost:9000')}"
+AWS_ACCESS_KEY_ID = ENV.str('AWS_ACCESS_KEY_ID', 'minioadmin')
+AWS_SECRET_ACCESS_KEY = ENV.str('AWS_SECRET_ACCESS_KEY', 'minioadmin')
+AWS_S3_VERIFY = ENV.bool('AWS_S3_VERIFY', False)
+AWS_STORAGE_BUCKET_NAME = ENV.str('AWS_STORAGE_BUCKET_NAME', 'media')
+AWS_S3_REGION_NAME = ENV.str('AWS_S3_REGION_NAME', None)
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}

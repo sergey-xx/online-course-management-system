@@ -211,3 +211,4 @@ media/
 static/
 .vscode/
 .vscode/launch.json
+minio_data/
