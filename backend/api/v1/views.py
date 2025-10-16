@@ -7,8 +7,8 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet, mixins
 
 from core.views import ServiceViewMixin
 from courses.models import Course, Grade, HomeWork, Lecture, Submission
-from courses.serializers import (CommentSerializers, CourseSerializers, GradeSerializers, HomeWorkSerializers,
-                                 LectureSerializers, MyHomeWorkSerializers, SubmissionSerializers)
+from courses.serializers import (CommentSerializer, CourseSerializer, GradeSerializer, HomeWorkSerializer,
+                                 LectureSerializer, MyHomeWorkSerializer, SubmissionSerializer)
 from courses.services import (CommentService, CourseService, GradingService, HomeWorkService, LectureService,
                               SubmissionService)
 
@@ -25,7 +25,7 @@ class CourseViewSet(ServiceViewMixin, ModelViewSet):
         get_owner_permission_class('author')
     ]
     queryset = Course.objects.prefetch_related('teachers', 'students')
-    serializer_class = CourseSerializers
+    serializer_class = CourseSerializer
     http_method_names = ['get', 'post', 'patch', 'delete']
     service_class = CourseService
 
@@ -39,7 +39,7 @@ class LectureViewSet(ServiceViewMixin, ModelViewSet):
         IsTeaacherOrReadOnly,
         CanAddLecture,
     ]
-    serializer_class = LectureSerializers
+    serializer_class = LectureSerializer
     parser_classes = (MultiPartParser,)
     http_method_names = ['get', 'post', 'patch', 'delete']
     service_class = LectureService
@@ -66,7 +66,7 @@ class LectureHomeWorkViewSet(ServiceViewMixin, ModelViewSet):
         CanAddHomeWork,
         get_owner_permission_class('author')
     ]
-    serializer_class = HomeWorkSerializers
+    serializer_class = HomeWorkSerializer
     http_method_names = ['get', 'post', 'patch', 'delete']
     service_class = HomeWorkService
 
@@ -91,7 +91,7 @@ class HomeWorkSubmissionViewSet(ServiceViewMixin, ModelViewSet):
         IsStudentrOrReadOnly,
         get_owner_permission_class('author')
     ]
-    serializer_class = SubmissionSerializers
+    serializer_class = SubmissionSerializer
     http_method_names = ['get', 'post', 'patch', 'delete']
     service_class = SubmissionService
 
@@ -122,7 +122,7 @@ class GradeViewSet(ServiceViewMixin,
         IsTeaacherOrReadOnly,
         get_owner_permission_class('author')
     ]
-    serializer_class = GradeSerializers
+    serializer_class = GradeSerializer
     lookup_field = 'submission_id'
     queryset = Grade.objects.all()
     http_method_names = ['post', 'patch']
@@ -147,7 +147,7 @@ class MyHomeWorkViewSet(mixins.ListModelMixin,
     permission_classes = [
         permissions.IsAuthenticated,
     ]
-    serializer_class = MyHomeWorkSerializers
+    serializer_class = MyHomeWorkSerializer
     queryset = HomeWork.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = HomeWorkFilter
@@ -175,7 +175,7 @@ class CommentViewSet(ServiceViewMixin, ModelViewSet):
         CanAddReadComment,
         get_owner_permission_class('author')
     ]
-    serializer_class = CommentSerializers
+    serializer_class = CommentSerializer
     http_method_names = ['get', 'post', 'patch', 'delete']
     service_class = CommentService
 

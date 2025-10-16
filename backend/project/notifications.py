@@ -8,19 +8,19 @@ from django.db.models import Model
 from rest_framework.renderers import JSONRenderer
 
 from courses.models import Comment, Course, Grade, HomeWork, Lecture, Submission
-from courses.serializers import (CommentSerializers, CourseSerializers, GradeSerializers, HomeWorkSerializers,
-                                 LectureSerializers, SubmissionSerializers)
+from courses.serializers import (CommentSerializer, CourseSerializer, GradeSerializer, HomeWorkSerializer,
+                                 LectureSerializer, SubmissionSerializer)
 from project.constants import EventEnum
 
 channel_layer = get_channel_layer()
 
 serializers_map = {
-    Course: CourseSerializers,
-    Lecture: LectureSerializers,
-    HomeWork: HomeWorkSerializers,
-    Submission: SubmissionSerializers,
-    Grade: GradeSerializers,
-    Comment: CommentSerializers,
+    Course: CourseSerializer,
+    Lecture: LectureSerializer,
+    HomeWork: HomeWorkSerializer,
+    Submission: SubmissionSerializer,
+    Grade: GradeSerializer,
+    Comment: CommentSerializer,
 }
 
 object_names = {

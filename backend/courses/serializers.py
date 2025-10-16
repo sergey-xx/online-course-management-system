@@ -6,7 +6,7 @@ from .models import Comment, Course, Grade, HomeWork, Lecture, Submission
 User = get_user_model()
 
 
-class CommentSerializers(serializers.ModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
@@ -25,7 +25,7 @@ class CommentSerializers(serializers.ModelSerializer):
         )
 
 
-class CourseSerializers(serializers.ModelSerializer):
+class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
@@ -50,7 +50,7 @@ class CourseSerializers(serializers.ModelSerializer):
         }
 
 
-class LectureSerializers(serializers.ModelSerializer):
+class LectureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lecture
@@ -72,7 +72,7 @@ class LectureSerializers(serializers.ModelSerializer):
         )
 
 
-class GradeSerializers(serializers.ModelSerializer):
+class GradeSerializer(serializers.ModelSerializer):
 
     id = serializers.IntegerField(source='submission_id', read_only=True)
 
@@ -93,9 +93,9 @@ class GradeSerializers(serializers.ModelSerializer):
         )
 
 
-class SubmissionSerializers(serializers.ModelSerializer):
+class SubmissionSerializer(serializers.ModelSerializer):
 
-    grade = GradeSerializers(read_only=True)
+    grade = GradeSerializer(read_only=True)
 
     class Meta:
         model = Submission
@@ -118,7 +118,7 @@ class SubmissionSerializers(serializers.ModelSerializer):
         )
 
 
-class HomeWorkSerializers(serializers.ModelSerializer):
+class HomeWorkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HomeWork
@@ -139,9 +139,9 @@ class HomeWorkSerializers(serializers.ModelSerializer):
         )
 
 
-class MyHomeWorkSerializers(serializers.ModelSerializer):
+class MyHomeWorkSerializer(serializers.ModelSerializer):
 
-    submissions = SubmissionSerializers(many=True)
+    submissions = SubmissionSerializer(many=True)
 
     class Meta:
         model = HomeWork
