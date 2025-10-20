@@ -112,7 +112,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
             'id',
             'author',
             'homework',
-            'grade,'
+            'grade',
             'created_at',
             'updated_at',
         )
