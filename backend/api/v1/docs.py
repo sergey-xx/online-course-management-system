@@ -8,15 +8,8 @@ from project.constants import EventEnum
 from .notifications import NotificationSenderV1
 
 
-class ClientWebSocketMessageSerializer(serializers.Serializer):
-    """Сообщение, которое клиент отправляет на сервер."""
-    command = serializers.ChoiceField(choices=['subscribe', 'send_message'])
-    room = serializers.CharField(max_length=100, required=False)
-    message = serializers.CharField(required=False)
-
-
 class ServerWebSocketMessageSerializer(serializers.Serializer):
-    """Сообщение, которое сервер отправляет клиенту."""
+    """A message that the server sends to the client."""
     id = serializers.UUIDField()
     event = serializers.ChoiceField(choices=[value for value in EventEnum])
     object_name = serializers.ChoiceField(
@@ -38,10 +31,11 @@ class NotificationWebSocketDocsView(APIView):
         tags=["WebSockets (Chat)"],
         summary="Connect to notification service by WebSocket",
         description="""
-        This endpoint establishes a WebSocket connection for chat.
-        Protocol: `ws://` or `wss://`
-        ---
-    """
+            This endpoint establishes a WebSocket connection for notifications.
+            Protocol: `ws://` or `wss://`
+            ---
+            `obj` can be any of represented in `object_name`
+        """
     )
     def get(self, request, *args, **kwargs):
         """
