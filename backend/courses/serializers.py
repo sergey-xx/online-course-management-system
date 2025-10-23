@@ -9,6 +9,7 @@ User = get_user_model()
 class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
+        api_object_name = 'comment'
         model = Comment
         fields = (
             'id',
@@ -28,6 +29,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
+        api_object_name = 'course'
         model = Course
         fields = (
             'id',
@@ -53,6 +55,7 @@ class CourseSerializer(serializers.ModelSerializer):
 class LectureSerializer(serializers.ModelSerializer):
 
     class Meta:
+        api_object_name = 'lecture'
         model = Lecture
         fields = (
             'id',
@@ -77,6 +80,7 @@ class GradeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='submission_id', read_only=True)
 
     class Meta:
+        api_object_name = 'grade'
         model = Grade
         fields = (
             'id',
@@ -98,6 +102,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
     grade = GradeSerializer(read_only=True)
 
     class Meta:
+        api_object_name = 'submission'
         model = Submission
         fields = (
             'id',
@@ -121,6 +126,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
 class HomeWorkSerializer(serializers.ModelSerializer):
 
     class Meta:
+        api_object_name = 'homework'
         model = HomeWork
         fields = (
             'id',
@@ -144,6 +150,7 @@ class MyHomeWorkSerializer(serializers.ModelSerializer):
     submissions = SubmissionSerializer(many=True)
 
     class Meta:
+        api_object_name = 'homework'
         model = HomeWork
         fields = (
             'id',

@@ -6,26 +6,11 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db.models import Model
 from rest_framework.renderers import JSONRenderer
+from rest_framework.serializers import Serializer
 
-from courses.models import Comment, Course, Grade, HomeWork, Lecture, Submission
-from courses.serializers import (CommentSerializer, CourseSerializer, GradeSerializer, HomeWorkSerializer,
-                                 LectureSerializer, SubmissionSerializer)
-from project.constants import EventEnum
+from project.constants import ChannelGroup, EventEnum
 
 channel_layer = get_channel_layer()
-
-serializers_map = {
-    Course: CourseSerializer,
-    Lecture: LectureSerializer,
-    HomeWork: HomeWorkSerializer,
-    Submission: SubmissionSerializer,
-    Grade: GradeSerializer,
-    Comment: CommentSerializer,
-}
-
-object_names = {
-    Course: 'course'
-}
 
 
 @dataclass
@@ -45,27 +30,33 @@ class Notification:
         }
 
 
-def object_to_dict(instance: Model):
-    serializer_class = serializers_map[type(instance)]
-    serializer = serializer_class(instance)
-    json_string = JSONRenderer().render(serializer.data).decode('utf-8')
-    return json.loads(json_string)
+@dataclass
+class NotificationSender:
+    group = ChannelGroup.NOTIFICATION
 
+    instance: Model
+    event: EventEnum
+    serializer_class: type[Serializer] | None = None
 
-def send_object_to_group(group: str, event: EventEnum, instance: Model):
-    obj = object_to_dict(instance)
-    object_name = object_names.get(type(instance), 'unknown')
-    notification = Notification(
-        event=event, object_name=object_name, obj=obj
-    )
-    json_string = json.dumps(notification.to_dict())
-    send_to_group(group, json_string)
+    @property
+    def serializer(self):
+        if self.serializer_class:
+            return self.serializer_class(self.instance)
+        return self.serializers_map[type(self.instance)](self.instance)
 
+    def to_dict(self):
+        json_string = JSONRenderer().render(self.serializer.data).decode('utf-8')
+        return json.loads(json_string)
 
-def send_to_group(group: str, message: str):
-    async_to_sync(channel_layer.group_send)(
-        group, {
-            'type': 'get.message',
-            'message': message,
-        }
-    )
+    def send(self):
+        obj = self.to_dict()
+        notification = Notification(
+            event=self.event, object_name=self.serializer.Meta.api_object_name, obj=obj
+        )
+        json_string = json.dumps(notification.to_dict())
+        async_to_sync(channel_layer.group_send)(
+            self.group, {
+                'type': 'get.message',
+                'message': json_string,
+            }
+        )

@@ -2,7 +2,7 @@ import json
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from project.constants import ChannelGroup
+from .constants import ChannelGroup
 
 
 class NotificationConsumer(AsyncWebsocketConsumer):
