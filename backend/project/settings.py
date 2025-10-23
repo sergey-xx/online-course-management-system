@@ -20,6 +20,7 @@ CSRF_TRUSTED_ORIGINS = ENV.list('CSRF_TRUSTED_ORIGINS', default=['http://127.0.0
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -58,7 +59,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -69,10 +70,21 @@ TEMPLATES = [
         },
     },
 ]
+# Redis settings
+REDIS_HOST = ENV.str('REDIS_HOST', default='localhost')
+REDIS_PORT = ENV.str('REDIS_PORT', default='6379')
+REDIS_DB = ENV.str('REDIS_DB', default='0')
 
 WSGI_APPLICATION = 'project.wsgi.application'
-
-
+ASGI_APPLICATION = "project.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(REDIS_HOST, REDIS_PORT)],
+        },
+    },
+}
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -206,7 +218,7 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
@@ -223,11 +235,9 @@ LOGGING = {
         'level': 'DEBUG',
     },
 }
-# Redis settings
-REDIS_HOST = ENV.str('REDIS_HOST', default='localhost')
 
 # Celery settings
-CELERY_BROKER_URL = f'redis://{REDIS_HOST}:6379/0'
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_DEFAULT_QUEUE = 'low'

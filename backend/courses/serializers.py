@@ -6,9 +6,10 @@ from .models import Comment, Course, Grade, HomeWork, Lecture, Submission
 User = get_user_model()
 
 
-class CommentSerializers(serializers.ModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
+        api_object_name = 'comment'
         model = Comment
         fields = (
             'id',
@@ -25,9 +26,10 @@ class CommentSerializers(serializers.ModelSerializer):
         )
 
 
-class CourseSerializers(serializers.ModelSerializer):
+class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
+        api_object_name = 'course'
         model = Course
         fields = (
             'id',
@@ -50,9 +52,10 @@ class CourseSerializers(serializers.ModelSerializer):
         }
 
 
-class LectureSerializers(serializers.ModelSerializer):
+class LectureSerializer(serializers.ModelSerializer):
 
     class Meta:
+        api_object_name = 'lecture'
         model = Lecture
         fields = (
             'id',
@@ -72,11 +75,12 @@ class LectureSerializers(serializers.ModelSerializer):
         )
 
 
-class GradeSerializers(serializers.ModelSerializer):
+class GradeSerializer(serializers.ModelSerializer):
 
     id = serializers.IntegerField(source='submission_id', read_only=True)
 
     class Meta:
+        api_object_name = 'grade'
         model = Grade
         fields = (
             'id',
@@ -93,11 +97,12 @@ class GradeSerializers(serializers.ModelSerializer):
         )
 
 
-class SubmissionSerializers(serializers.ModelSerializer):
+class SubmissionSerializer(serializers.ModelSerializer):
 
-    grade = GradeSerializers(read_only=True)
+    grade = GradeSerializer(read_only=True)
 
     class Meta:
+        api_object_name = 'submission'
         model = Submission
         fields = (
             'id',
@@ -112,15 +117,16 @@ class SubmissionSerializers(serializers.ModelSerializer):
             'id',
             'author',
             'homework',
-            'grade,'
+            'grade',
             'created_at',
             'updated_at',
         )
 
 
-class HomeWorkSerializers(serializers.ModelSerializer):
+class HomeWorkSerializer(serializers.ModelSerializer):
 
     class Meta:
+        api_object_name = 'homework'
         model = HomeWork
         fields = (
             'id',
@@ -139,11 +145,12 @@ class HomeWorkSerializers(serializers.ModelSerializer):
         )
 
 
-class MyHomeWorkSerializers(serializers.ModelSerializer):
+class MyHomeWorkSerializer(serializers.ModelSerializer):
 
-    submissions = SubmissionSerializers(many=True)
+    submissions = SubmissionSerializer(many=True)
 
     class Meta:
+        api_object_name = 'homework'
         model = HomeWork
         fields = (
             'id',
