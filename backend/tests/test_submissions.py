@@ -9,7 +9,7 @@ User = get_user_model()
 
 @pytest.mark.parametrize('auth_client', ['teacher'], indirect=True)
 def test_list_submissions_by_teacher(auth_client, homework, submission, another_submission):
-    """Преподаватель курса может видеть все решения к домашнему заданию."""
+    """The course instructor can see all homework solutions."""
     url = f'/api/v1/homeworks/{homework.id}/submissions/'
     response = auth_client.get(url)
     assert response.status_code == status.HTTP_200_OK
@@ -18,7 +18,7 @@ def test_list_submissions_by_teacher(auth_client, homework, submission, another_
 
 @pytest.mark.parametrize('auth_client', ['student'], indirect=True)
 def test_list_submissions_by_student_forbidden(auth_client, homework, submission, another_submission):
-    """Студент может видеть только свои."""
+    """The student can only see his own."""
     url = f'/api/v1/homeworks/{homework.id}/submissions/'
     response = auth_client.get(url)
     assert response.status_code == status.HTTP_200_OK
@@ -27,7 +27,7 @@ def test_list_submissions_by_student_forbidden(auth_client, homework, submission
 
 
 def test_list_submissions_unauthenticated(anon_client, homework, submission, another_submission):
-    """Анонимный пользователь не может видеть список решений."""
+    """An anonymous user cannot see the solution list."""
     url = f'/api/v1/homeworks/{homework.id}/submissions/'
     response = anon_client.get(url)
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -35,7 +35,7 @@ def test_list_submissions_unauthenticated(anon_client, homework, submission, ano
 
 @pytest.mark.parametrize('auth_client', ['student'], indirect=True)
 def test_create_submission_by_student(auth_client, homework):
-    """Студент, записанный на курс, может отправить решение."""
+    """A student enrolled in a course can submit a solution."""
     url = f'/api/v1/homeworks/{homework.id}/submissions/'
     payload = {
         'text': 'string',
@@ -47,7 +47,7 @@ def test_create_submission_by_student(auth_client, homework):
 
 @pytest.mark.parametrize('auth_client', ['teacher'], indirect=True)
 def test_create_submission_by_teacher_forbidden(auth_client, homework):
-    """Преподаватель не может отправлять решение."""
+    """The teacher cannot submit a solution."""
     url = f'/api/v1/homeworks/{homework.id}/submissions/'
     payload = {
         'text': 'string',
@@ -58,7 +58,7 @@ def test_create_submission_by_teacher_forbidden(auth_client, homework):
 
 @pytest.mark.parametrize('auth_client', ['student'], indirect=True)
 def test_retrieve_own_submission_by_student(auth_client, homework, submission):
-    """Студент может просматривать свое решение."""
+    """The student can view his solution."""
     url = f'/api/v1/homeworks/{homework.id}/submissions/{submission.id}/'
     response = auth_client.get(url)
     assert response.status_code == status.HTTP_200_OK
@@ -67,7 +67,7 @@ def test_retrieve_own_submission_by_student(auth_client, homework, submission):
 
 @pytest.mark.parametrize('auth_client', ['student'], indirect=True)
 def test_retrieve_others_submission_by_student_forbidden(auth_client, homework, another_submission):
-    """Студент не может просматривать чужое решение."""
+    """A student cannot view someone else's solution."""
     url = f'/api/v1/homeworks/{homework.id}/submissions/{another_submission.id}/'
     response = auth_client.get(url)
     assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -75,7 +75,7 @@ def test_retrieve_others_submission_by_student_forbidden(auth_client, homework, 
 
 @pytest.mark.parametrize('auth_client', ['teacher'], indirect=True)
 def test_retrieve_submission_by_teacher(auth_client, homework, submission, another_submission):
-    """Преподаватель может просматривать любое решение в своем курсе."""
+    """A teacher can view any solution in their course."""
     for submission in (submission, another_submission):
         url = f'/api/v1/homeworks/{homework.id}/submissions/{submission.id}/'
         response = auth_client.get(url)
@@ -85,7 +85,7 @@ def test_retrieve_submission_by_teacher(auth_client, homework, submission, anoth
 
 @pytest.mark.parametrize('auth_client', ['student'], indirect=True)
 def test_update_own_submission_by_student(auth_client, homework, submission):
-    """Студент может обновить свое решение."""
+    """The student can update his decision."""
     url = f'/api/v1/homeworks/{homework.id}/submissions/{submission.id}/'
     payload = {
         'text': 'updated',
@@ -98,7 +98,7 @@ def test_update_own_submission_by_student(auth_client, homework, submission):
 
 @pytest.mark.parametrize('auth_client', ['student'], indirect=True)
 def test_delete_own_submission_by_student(auth_client, homework, submission):
-    """Студент может удалить свое решение."""
+    """A student can delete his/her decision."""
     url = f'/api/v1/homeworks/{homework.id}/submissions/{submission.id}/'
     payload = {
         'text': 'updated',
