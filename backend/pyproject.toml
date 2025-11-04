@@ -44,30 +44,6 @@ python_files = "tests.py test_*.py *_tests.py"
 line_length = 119
 known_first_party = ["backend"]
 
-[tool.flake8]
-ignore = [
-    'I001',
-    'I003',
-    'I004',
-    'I005',
-    'W503',
-]
-exclude = [
-    '*/migrations/',
-    'venv/',
-    '.venv/',
-    '*.venv/',
-    '*/venv/',
-    'env/',
-    '*/env/',
-    'backend/media/',
-]
-per-file-ignores = [
-    '*/settings.py:E501'
-]
-max-line-length = 119
-known_first_party = ["backend"]
-
 [tool.ruff]
 src = ["backend"]
 exclude = [
