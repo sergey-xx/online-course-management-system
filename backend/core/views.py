@@ -1,10 +1,7 @@
-from typing import Type
-
-
 class ServiceViewMixin:
     """Overrides creation, update and delete methods not to use serializer."""
 
-    service_class: Type
+    service_class: type
 
     def get_service(self):
         return self.service_class(self.request.user)

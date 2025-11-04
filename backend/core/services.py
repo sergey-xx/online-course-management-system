@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import Type
 
 from django.contrib.auth import get_user_model
 from django.db.models import Model
@@ -9,7 +8,7 @@ User = get_user_model()
 
 class AuthorService(ABC):
 
-    model: Type[Model]
+    model: type[Model]
 
     def __init__(self, author: User):
         """

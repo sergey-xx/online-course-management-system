@@ -4,10 +4,9 @@ import time
 import celery
 from celery import Celery
 from celery.schedules import crontab
-from kombu.utils.json import register_type
-from django.db.models import Model
 from django.apps import apps
-
+from django.db.models import Model
+from kombu.utils.json import register_type
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 app = Celery('project')

@@ -38,7 +38,7 @@ def test_create_submission_by_student(auth_client, homework):
     """Студент, записанный на курс, может отправить решение."""
     url = f'/api/v1/homeworks/{homework.id}/submissions/'
     payload = {
-        "text": "string",
+        'text': 'string',
     }
     response = auth_client.post(url, payload)
     assert response.status_code == status.HTTP_201_CREATED
@@ -50,7 +50,7 @@ def test_create_submission_by_teacher_forbidden(auth_client, homework):
     """Преподаватель не может отправлять решение."""
     url = f'/api/v1/homeworks/{homework.id}/submissions/'
     payload = {
-        "text": "string",
+        'text': 'string',
     }
     response = auth_client.post(url, payload)
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -88,7 +88,7 @@ def test_update_own_submission_by_student(auth_client, homework, submission):
     """Студент может обновить свое решение."""
     url = f'/api/v1/homeworks/{homework.id}/submissions/{submission.id}/'
     payload = {
-        "text": "updated",
+        'text': 'updated',
     }
     response = auth_client.patch(url, payload)
     assert response.status_code == status.HTTP_200_OK
@@ -101,7 +101,7 @@ def test_delete_own_submission_by_student(auth_client, homework, submission):
     """Студент может удалить свое решение."""
     url = f'/api/v1/homeworks/{homework.id}/submissions/{submission.id}/'
     payload = {
-        "text": "updated",
+        'text': 'updated',
     }
     response = auth_client.delete(url, payload)
     assert response.status_code == status.HTTP_204_NO_CONTENT

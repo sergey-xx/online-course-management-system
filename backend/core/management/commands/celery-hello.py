@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from project.celery import debug_classed_task, debug_task, print_obj_task, low_task, high_task, undefined_task
+from project.celery import debug_classed_task, debug_task, high_task, low_task, print_obj_task, undefined_task
 from users.models import CustomUser
 
 

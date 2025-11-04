@@ -32,6 +32,8 @@ dev = [
     "faker>=37.5.3",
     "django-querycount>=0.8.3",
     "django-stubs>=5.2.7",
+    "ruff>=0.14.3",
+    "pre-commit>=4.3.0",
 ]
 
 
@@ -44,7 +46,7 @@ line_length = 119
 known_first_party = ["backend"]
 
 [tool.flake8]
-ignore = [ 
+ignore = [
     'I001',
     'I003',
     'I004',
@@ -65,4 +67,29 @@ per-file-ignores = [
     '*/settings.py:E501'
 ]
 max-line-length = 119
-known_first_party = ["backend"] 
+known_first_party = ["backend"]
+
+[tool.ruff]
+src = ["backend"]
+exclude = [
+    '*/migrations/',
+    'venv/',
+    '.venv/',
+    '*.venv/',
+    '*/venv/',
+    'env/',
+    '*/env/',
+    'backend/media/',
+]
+line-length = 119
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "F",  # Pyflakes
+    "W",  # pycodestyle warnings
+    "UP", # pyupgrade
+]
+
+[tool.ruff.format]
+quote-style = "single"
