@@ -92,7 +92,3 @@ select = [
 
 [tool.ruff.format]
 quote-style = "single"
-
-[tool.ruff.lint.isort]
-known-first-party = ["tests", "courses"] # Define your first-party modules
-force-sort-within-sections = true
