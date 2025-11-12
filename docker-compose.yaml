@@ -24,6 +24,14 @@ services:
     volumes:
       - ./minio_data:/data
     command: server /data --console-address ":9001"
+  elasticsearch:
+    image: elasticsearch:9.2.1
+    env_file: .env
+    environment:
+      discovery.type: single-node
+    ports:
+      - "9200:9200"
+      - "9300:9300"
   backend:
     build:
       context: backend/

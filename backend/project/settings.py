@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "django_filters",
     "simple_history",
+    "django_elasticsearch_dsl",
     "djoser",
     "core",
     "api",
@@ -260,4 +261,13 @@ AWS_STORAGE_BUCKET_NAME = ENV.str("AWS_STORAGE_BUCKET_NAME", "media")
 AWS_S3_REGION_NAME = ENV.str("AWS_S3_REGION_NAME", None)
 AWS_S3_OBJECT_PARAMETERS = {
     "CacheControl": "max-age=86400",
+}
+
+# Elasticsearch integration
+ELASTICSEARCH_DSL = {
+    "default": {
+        "hosts": f"https://{ENV.str('ELASTIC_HOST', 'localhost')}:{ENV.str('ELASTIC_PORT', '9200')}",
+        "verify_certs": False,
+        "http_auth": (ENV.str("ELASTIC_USERNAME"), ENV.str("ELASTIC_PASSWORD")),
+    }
 }

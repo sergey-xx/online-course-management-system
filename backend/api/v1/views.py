@@ -5,7 +5,8 @@ from rest_framework import permissions
 from rest_framework.parsers import MultiPartParser
 from rest_framework.viewsets import GenericViewSet, ModelViewSet, mixins
 
-from core.views import ServiceViewMixin
+from core.views import SearchViewMixin, ServiceViewMixin
+from courses.documents import CourseDocument
 from courses.models import Course, Grade, HomeWork, Lecture, Submission
 from courses.serializers import (
     CommentSerializer,
@@ -36,12 +37,14 @@ from .permissions import (
 )
 
 
-class CourseViewSet(ServiceViewMixin, ModelViewSet):
+class CourseViewSet(ServiceViewMixin, SearchViewMixin, ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsTeaacherOrReadOnly, get_owner_permission_class("author"))
     queryset = Course.objects.prefetch_related("teachers", "students")
     serializer_class = CourseSerializer
     http_method_names = ("get", "post", "patch", "delete")
     service_class = CourseService
+    document_class = CourseDocument
+    search_fields = ("title",)
 
 
 class LectureViewSet(ServiceViewMixin, ModelViewSet):
