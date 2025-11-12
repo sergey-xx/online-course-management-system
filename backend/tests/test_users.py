@@ -5,50 +5,28 @@ from django.core.exceptions import FieldDoesNotExist
 pytestmark = pytest.mark.django_db
 
 
-@pytest.mark.parametrize(
-    'field', [
-        'email',
-        'first_name',
-        'last_name',
-        'username',
-        'role'])
+@pytest.mark.parametrize("field", ["email", "first_name", "last_name", "username", "role"])
 def test_user_model_has_expected_fields(field):
-    User = get_user_model()
+    User = get_user_model()  # NOQA: N806
     try:
         User._meta.get_field(field)
-    except FieldDoesNotExist:
-        assert False, (
-            f'Make sure that the `User` model has the `{field}` field.'
-        )
+    except FieldDoesNotExist as e:
+        raise AssertionError(f"Make sure that the `User` model has the `{field}` field.") from e
 
 
-@pytest.mark.parametrize(
-    'role', ['TEACHER', 'STUDENT']
-)
+@pytest.mark.parametrize("role", ["TEACHER", "STUDENT"])
 def test_registration(anon_client, role):
-    url = '/api/v1/auth/users/'
-    payload = {
-        "email": "user@example.com",
-        "username": "string",
-        "password": "VUnTDBAVmFYKeRP3XRo",
-        "role": role
-    }
-    response = anon_client.post(url, data=payload, format='json')
+    url = "/api/v1/auth/users/"
+    payload = {"email": "user@example.com", "username": "string", "password": "VUnTDBAVmFYKeRP3XRo", "role": role}
+    response = anon_client.post(url, data=payload, format="json")
     assert response.status_code == 201
     data = response.json()
-    assert data['role'] == role
+    assert data["role"] == role
 
 
-@pytest.mark.parametrize(
-    'role', ['BLABLA', 'HUMAN', 'ADMIN', '', None]
-)
+@pytest.mark.parametrize("role", ["BLABLA", "HUMAN", "ADMIN", "", None])
 def test_registration_with_uncorrect_role(anon_client, role):
-    url = '/api/v1/auth/users/'
-    payload = {
-        "email": "user@example.com",
-        "username": "string",
-        "password": "VUnTDBAVmFYKeRP3XRo",
-        "role": role
-    }
-    response = anon_client.post(url, data=payload, format='json')
+    url = "/api/v1/auth/users/"
+    payload = {"email": "user@example.com", "username": "string", "password": "VUnTDBAVmFYKeRP3XRo", "role": role}
+    response = anon_client.post(url, data=payload, format="json")
     assert response.status_code == 400

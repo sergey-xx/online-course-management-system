@@ -5,8 +5,15 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from courses.models import Comment, Course, Grade, HomeWork, Lecture, Submission, User
-from mock.factories import (CommentFactory, CourseFactory, GradeFactory, HomeWorkFactory, LectureFactory,
-                            SubmissionFactory, UserFactory)
+from mock.factories import (
+    CommentFactory,
+    CourseFactory,
+    GradeFactory,
+    HomeWorkFactory,
+    LectureFactory,
+    SubmissionFactory,
+    UserFactory,
+)
 
 NUM_STUDENTS = 1000
 NUM_TEACHERS = 100
@@ -49,11 +56,11 @@ class Command(BaseCommand):
         self.stdout.write(f"Creating {NUM_LECTURES} lectures...")
         lectures = []
         for _ in range(NUM_LECTURES):
-            course = random.choice(courses)
+            course = random.choice(courses)  # NOQA: S311
             course_teachers = list(course.teachers.all())
             if not course_teachers:
                 course_teachers = teachers
-            teacher = random.choice(course_teachers)
+            teacher = random.choice(course_teachers)  # NOQA: S311
             lectures.append(LectureFactory(course=course, teacher=teacher))
 
         self.stdout.write(f"Creating {NUM_HOMEWORKS} homworks...")
@@ -77,7 +84,7 @@ class Command(BaseCommand):
             course_teachers = list(sub.homework.lecture.course.teachers.all())
             if not course_teachers:
                 course_teachers = teachers
-            grader = random.choice(course_teachers)
+            grader = random.choice(course_teachers)  # NOQA: S311
             grades.append(GradeFactory(submission=sub, author=grader))
 
         self.stdout.write(f"Creating {NUM_COMMENTS} comments...")

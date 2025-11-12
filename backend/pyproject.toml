@@ -42,37 +42,86 @@ dev = [
 DJANGO_SETTINGS_MODULE = "project.settings"
 python_files = "tests.py test_*.py *_tests.py"
 
-[tool.isort]
-line_length = 119
-known_first_party = ["backend"]
-
 [tool.ruff]
-src = ["backend"]
-exclude = [
-    '*/migrations/',
-    'venv/',
-    '.venv/',
-    '*.venv/',
-    '*/venv/',
-    'env/',
-    '*/env/',
-    'backend/media/',
-]
-line-length = 119
+# Ruff config: https://docs.astral.sh/ruff/settings
+fix = true # auto fix
+line-length = 120
+
+[tool.ruff.format]
+quote-style = "double"
+docstring-code-format = false  # Whether to format code snippets in docstrings.
 
 [tool.ruff.lint]
 select = [
-    "E",  # pycodestyle errors
-    "F",  # Pyflakes
-    "W",  # pycodestyle warnings
-    "UP", # pyupgrade
+  "A",    # flake8-builtins. Check for python builtins being used as variables or parameters.
+  "B",    # flake8-bugbear. A plugin for Flake8 finding likely bugs and design problems in your program.
+  "C4",   # flake8-comprehensions. A flake8 plugin that helps you write better list/set/dict comprehensions.
+  "D",    # pydocstyle. pydocstyle is a static analysis tool for checking compliance with Python docstring conventions.
+  "DTZ",  # flake8-datetimez. A plugin for flake8 to ban the usage of unsafe naive datetime class.
+  "E",    # pycodestyle. pycodestyle is a tool to check your Python code against some of the style conventions in PEP 8.
+  "ERA",  # flake8-eradicate. flake8 plugin to find commented out (or so called "dead") code.
+  "EXE",  # flake8-executable. plugin that ensures the executable permissions and shebangs of Python files are correctly set.
+  "F",    # pyflakes. A simple program which checks Python source files for errors.
+  "FLY",  # pyflint. flynt is a command line tool to automatically convert a project's Python code from old "%-formatted" and .format(...) strings into Python 3.6+'s "f-strings".
+  "FURB", # refurb. A tool for refurbishing and modernizing Python codebases.
+  "G",    # flake8-logging-format. Flake8 extension to validate (lack of) logging format strings
+  "I",    # isort. isort is a Python utility / library to sort imports alphabetically and automatically separate into sections and by type.
+  "ISC",  # flake8-implicit-str-concat. This is a plugin for the Python code-checking tool Flake8 to encourage correct string literal concatenation.
+  "LOG",  # flake8-logging. A Flake8 plugin that checks for issues using the standard library logging module.
+  "PTH",  # flake8-use-pathlib. A plugin for flake8 finding use of functions that can be replaced by pathlib module.
+  "PERF", # perflint. A Linter for performance anti-patterns
+  "PT",   # flake8-pytest-style. A flake8 plugin checking common style issues or inconsistencies with pytest-based tests.
+  "RET",  # flake8-return. Flake8 plugin that checks return values.
+  "RSE",  # flake8-raise. A flake8 plugin that finds improvements for raise statements.
+  "RUF",  # ruff. Ruff-specific rules
+  "PIE",  # flake8-pie. A flake8 extension that implements misc. lints
+  "S",    # flake8-bandit. Automated security testing built right into your workflow!
+  "N",    # pep8-naming. Check your code against PEP 8 naming conventions.
+  "SLOT", # flake8-slots. A Flake8 plugin to require __slots__ to be defined for subclasses of immutable types.
+  "SIM",  # flake8-simpify. A flake8 plugin that helps you simplify your code.
+  "T10", # debugger. ipdb/pdb statement checker plugin for flake8
+  "TRY",  # tryceratops. Prevent Exception Handling AntiPatterns
+  "UP",   # pyupgrade. A tool to automatically upgrade syntax for newer versions.
+  "W",    # pycodestyle. Python style guide checker
+  "YTT",  # flake8-2020. flake8 plugin which checks for misuse of `sys.version` or `sys.version_info`
 ]
 
-[tool.ruff.format]
-quote-style = "single"
+ignore = [
+  "D100",  # undocumented-public-module
+  "D101",  # undocumented-public-class
+  "D102",  # undocumented-public-method
+  "D103",  # undocumented-public-function
+  "D104",  # undocumented-public-package
+  "D105",  # Missing docstring in magic method
+  "D106",  # undocumented-public-nested-class
+  "D107",  # Missing docstring in `__init__`
+  "D212",  # multi-line-summary-first-line. Or choose D212 if prefere.
+  "D405",  # non-capitalized-section-name. Checks for section headers in docstrings that do not begin with capital letters.
+  "ISC001",  # single-line-implicit-string-concatenation (Conflicts with formatter)
+  "RET503",  # implicit-return. Checks for missing explicit return statements at the end of functions that can return non-None values.
+  "RUF001",  # ambiguous-unicode-character-string. Checks for ambiguous Unicode characters in strings.
+  "RUF002",  # ambiguous-unicode-character-docstring (Allow non-ascii letters)
+  "RUF012",  #  Mutable class attributes should be annotated with `typing.ClassVar`
+  "TRY003",  # raise-vanilla-args (Long exception messages from tryceratops)
+]
 
-[tool.mypy]
-plugins = ["mypy_django_plugin.main"]
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
-[tool.django-stubs]
-django_settings_module = "project.settings"
+[tool.ruff.lint.per-file-ignores]
+"*/migrations/*.py" = [
+    "D",     # Ignore all pydocstyle rules.
+    "E501",  # Line too long
+    "N801",  # invalid-class-name
+    "PIE794",# `dupe-class-field-definitions`
+    "RUF",
+]
+"tests/*.py" = [
+    "D101",  # missing docstring in public class
+    "D102",  # missing docstring in public functions
+    "S101",  # asserts
+    "S105",  # hardcoded passwords
+    "S404",  # subprocess calls are for tests
+    "S603",  # do not require `shell=True`
+    "S607",  # partial executable paths
+]

@@ -8,13 +8,11 @@ from core.auth_middleware import JWTAuthMiddlewareStack
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 
-from api.urls import websocket_urlpatterns  # NOQA
+from api.urls import websocket_urlpatterns
 
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
-        "websocket": AllowedHostsOriginValidator(
-            JWTAuthMiddlewareStack(URLRouter(websocket_urlpatterns))
-        ),
+        "websocket": AllowedHostsOriginValidator(JWTAuthMiddlewareStack(URLRouter(websocket_urlpatterns))),
     }
 )

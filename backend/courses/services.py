@@ -7,13 +7,12 @@ from courses.models import Comment, Course, Grade, HomeWork, Lecture, Submission
 
 
 class CourseService(AuthorService):
-    """
-    A service class to handle business logic related to courses.
-    """
+    """A service class to handle business logic related to courses."""
+
     @transaction.atomic
     def create(self, **kwargs):
-        teachers = kwargs.pop('teachers', None)
-        students = kwargs.pop('students', None)
+        teachers = kwargs.pop("teachers", None)
+        students = kwargs.pop("students", None)
         course = Course.objects.create(author=self.author, **kwargs)
         if teachers:
             course.teachers.set(teachers)
@@ -23,8 +22,8 @@ class CourseService(AuthorService):
 
     @transaction.atomic
     def update(self, instance, **kwargs):
-        teachers = kwargs.pop('teachers', None)
-        students = kwargs.pop('students', None)
+        teachers = kwargs.pop("teachers", None)
+        students = kwargs.pop("students", None)
         for attr, value in kwargs.items():
             setattr(instance, attr, value)
         if teachers:
@@ -36,48 +35,40 @@ class CourseService(AuthorService):
 
 
 class LectureService(AuthorService):
-    """
-    A service class to handle business logic related to lectures.
-    """
+    """A service class to handle business logic related to lectures."""
+
     model = Lecture
 
     def create(self, *args, **kwargs):
-        return self.model.objects.create(
-            *args, **kwargs
-        )
+        return self.model.objects.create(*args, **kwargs)
 
 
 class HomeWorkService(AuthorService):
-    """
-    A service class to handle business logic related to homeworks.
-    """
+    """A service class to handle business logic related to homeworks."""
+
     model = HomeWork
 
 
 class SubmissionService(AuthorService):
-    """
-    A service class to handle business logic related to submissions.
-    """
+    """A service class to handle business logic related to submissions."""
+
     model = Submission
 
 
 class GradingService(AuthorService):
-    """
-    A service class to handle business logic related to gradings.
-    """
+    """A service class to handle business logic related to gradings."""
+
     model = Grade
 
     def create(self, **kwargs) -> Grade:
         try:
-            grade = super().create(**kwargs)
-            return grade
-        except IntegrityError:
-            submission = kwargs.get('submission')
-            raise Conflict(f'Submission {submission.pk} already has a Grade.')
+            return super().create(**kwargs)
+        except IntegrityError as e:
+            submission = kwargs.get("submission")
+            raise Conflict(f"Submission {submission.pk} already has a Grade.") from e
 
 
 class CommentService(AuthorService):
-    """
-    A service class to handle business logic related to comments.
-    """
+    """A service class to handle business logic related to comments."""
+
     model = Comment

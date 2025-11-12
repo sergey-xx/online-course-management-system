@@ -1,9 +1,9 @@
 repos:
-  -   repo: https://github.com/astral-sh/ruff-pre-commit
-      rev: 'v0.5.0'
-      hooks:
-      -   id: ruff
-  -   repo: https://github.com/PyCQA/isort
-      rev: 5.13.2
-      hooks:
-      -   id: isort
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.14.4
+  hooks:
+# STEP 1: First, format the code.
+    - id: ruff-format
+# STEP 2: Look for errors and correct them.
+    - id: ruff
+      args: ["--fix", "--exit-non-zero-on-fix"]
