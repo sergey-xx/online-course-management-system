@@ -34,6 +34,7 @@ dev = [
     "faker>=37.5.3",
     "django-querycount>=0.8.3",
     "django-stubs>=5.2.7",
+    "vulture>=2.14",
 ]
 
 
@@ -68,3 +69,10 @@ per-file-ignores = [
 ]
 max-line-length = 119
 known_first_party = ["backend"] 
+
+[tool.vulture]
+# Patrly replaceble by Pyflakes Ruff linter
+exclude = ["migrations/", ".venv/"]  # Ignore Django migrations
+min_confidence = 0              # Filter out low-confidence false positives
+#sort_by_size = true              # Prioritize large blocks of dead code
+#verbose = true                   # Show more detailed output
